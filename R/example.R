@@ -3,8 +3,8 @@ library(tidyverse)
 library(rio)
 setwd("~/Downloads/Pdfs/AMOS/Done")
 
-x <- "aaaaaaaaaaaa 2 (54) = 60.1, p < 0.27, goodness-of-fit index (GFI) = .94, comparative fit index (CFI) = .96, and root mean square error of approximation (RMSEA) = .03. aaaaaaaaaaaaaa"
-y <- "v2 = (6 df, p \ .01) 62.4, GFI = .99, AGFI = .99, PGFI = .13, RMSEA = .03, AIC = 140.4"
+x <- " fit indices: 2 (54) = 60.1, p < 0.27, goodness-of-fit index (GFI) = .94, comparative fit index (CFI) = .96, and root mean square error of approximation (RMSEA) = .03. aaaaaaaaaaaaaa"
+y <- "v2 = (6 df, p \ .01) 62.4, GFI = .99, AGFI = .99, PGFI = .13, RMSEA = .03, AIC = 140.4" #Ahmetoglu 2010
 z <- readLines("Gutieerrez (2006).txt")
 a <- readLines("Bassi (2012).txt")
 b <- "and the root mean square error of approximation (RMSEA) was equal to .08, which indicated"
@@ -16,9 +16,11 @@ g <- " (v2(47) 1/4 251.4, p < .01), due to the large sample size, but the RMSEA 
 h <- "N = 641 2  = 194.08 d = 71 p = .000 NFI = .989 TLI = .990 RMSEA = .052" #Bradford 2008
 i <- readLines("Bradford (2008).txt")
 j <- readLines("Carmeli (2006).txt")
+k <- "tributed 8 percent (R 2 1/4 0:08, F 1/4 2:46, p 1/4 0:026), a" #case that should be detected #Carmeli
 
 #chi sqr
-str_view(i, regex("((chi-square |v2 | 2 )(((\\(\\d*\\.?\\d+\\s?(,\\s?N\\s?\\=\\s?\\d*\\,?\\d*\\,?\\d+\\s?)?\\))?\\s?([<>=]|(1/4))\\s?)|(((\\s\\w+){0,10})))\\s\\d*(\\.|\\:)?\\d*)", ignore_case = T))
+str_view(h, regex("((chi-square |chi-square of|v2(| )|(\\:|\\(|\\d) 2 )(((\\(\\d*\\.?\\d+\\s?(,\\s?N\\s?\\=\\s?\\d*\\,?\\d*\\,?\\d+\\s?)?\\))?\\s?([<>=]|(1/4)))|((\\s\\w+){0,10}))(\\s\\d*(\\.|\\:)?\\d*))", ignore_case = T))
+str_view(k, regex("((chi-square |chi-square of|v2(| )|(\\:|\\() 2 )(((\\(\\d*\\.?\\d+\\s?(,\\s?N\\s?\\=\\s?\\d*\\,?\\d*\\,?\\d+\\s?)?\\))?\\s?([<>=]|(1/4)))|((\\s\\w+){0,10}))(\\s\\d*(\\.|\\:)?\\d*))", ignore_case = T))
 
 
 #RMSEA
