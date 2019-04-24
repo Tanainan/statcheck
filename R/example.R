@@ -15,17 +15,14 @@ f <- " v2 = 11.7, P-value = 0.16; (b) v" #Bartomeus 2010
 g <- " (v2(47) 1/4 251.4, p < .01), due to the large sample size, but the RMSEA suggested good fit (RMSEA 1/4 .056). T" #Belsky 2007
 h <- "N = 641 2  = 194.08 d = 71 p = .000 NFI = .989 TLI = .990 RMSEA = .052" #Bradford 2008
 i <- readLines("Bradford (2008).txt")
+j <- readLines("Carmeli (2006).txt")
 
 #chi sqr
-str_view(i, regex("((chi-square |v2 | 2 )(((\\(\\d*\\.?\\d+\\s?(,\\s?N\\s?\\=\\s?\\d*\\,?\\d*\\,?\\d+\\s?)?\\))?\\s?([<>=]|(1/4))\\s?)|(((\\s\\w+){0,10})))\\s\\d*\\.?\\d*)", ignore_case = T))
+str_view(i, regex("((chi-square |v2 | 2 )(((\\(\\d*\\.?\\d+\\s?(,\\s?N\\s?\\=\\s?\\d*\\,?\\d*\\,?\\d+\\s?)?\\))?\\s?([<>=]|(1/4))\\s?)|(((\\s\\w+){0,10})))\\s\\d*(\\.|\\:)?\\d*)", ignore_case = T))
 
 
 #RMSEA
-#str_view(x, regex("(RMSEA\\)?\\s[<>=]?\\s?\\d*\\.\\d*)", ignore_case = T))
-#str_view(b, regex("(RMSEA\\)?\\s[<>=]?\\s?\\w+\\s?\\w+\\s?\\w+\\s?\\d*\\.?\\d*)", ignore_case = T))
-#str_view(c, regex("(root mean square error of approximation\\)?\\s[<>=]?\\s?\\w+\\s?\\w+\\s?\\w+\\s?\\d*\\.?\\d*)", ignore_case = T))
-#str_view(c, regex("((error of approximation|RMSEA\\)?)\\s?\\s?[<>=]?\\s?\\w+\\s?\\w+\\s?\\w+\\s?\\d*\\.?\\d*)", ignore_case = T))
-str_view(i, regex("((root mean square error of approximation|root-mean-square error of approximation|\\(?RMSEA\\)?)\\s(([<>=]|(1/4))|((\\w+\\s){0,10}))\\s(\\d*\\.?\\d*))", ignore_case = T))
+str_view(j, regex("((root mean square error of approximation|root-mean-square error of approximation|\\(?RMSEA\\)?)\\s(([<>=]|(1/4))|((\\w+\\s){0,10}))\\s(\\d*(\\.|\\:)?\\d*))", ignore_case = T))
 
 
 #N
