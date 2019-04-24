@@ -10,38 +10,21 @@ a <- readLines("Bassi (2012).txt")
 b <- "and the root mean square error of approximation (RMSEA) was equal to .08, which indicated"
 c <- "and the root mean square error of approximation was equal to .08, which indicated"
 d <- "bb was equal to .08, which indicated"
-
-str_view(a,
-         "((\\[CHI\\]|\\[DELTA\\]G)\\s?|(\\s[^trFzQWBnD ]\\s?)|([^trFzQWBnD ]2\\s?))2?\\(\\s?\\d*\\.?\\d+\\s?(,\\s?N\\s?\\=\\s?\\d*\\,?\\d*\\,?\\d+\\s?)?\\)\\s?[<>=]\\s?\\s?\\d*,?\\d*\\.?\\d+\\s?,\\s?(([^a-z]ns)|(p\\s?[<>=]\\s?\\d?\\.\\d+e?-?\\d*))"
-)
-
-gregexpr(
-  "(\\-?\\s?\\d*\\.?\\d+\\s?e?-?\\d*)|ns",
-  sub("^.*?\\(", "", x),
-  ignore.case = TRUE
-)
-
-gregexpr(
-  "p\\s?[<>=]\\s?\\d?\\.\\d+e?-?\\d*",
-  x,
-  ignore.case = TRUE
-)
-
-str_view(y,
-         "((\\[CHI\\]|\\[DELTA\\]G)\\s?|(\\s[^trFzQWBnD ]\\s?)|([^trFzQWBnD ]2\\s?))2?\\(\\s?\\d*\\.?\\d+\\s?(,\\s?N\\s?\\=\\s?\\d*\\,?\\d*\\,?\\d+\\s?)?\\)\\s?[<>=]\\s?\\s?\\d*,?\\d*\\.?\\d+\\s?,\\s?(([^a-z]ns)|(p\\s?[<>=]\\s?\\d?\\.\\d+e?-?\\d*))")
+e <- "a Chi-square of 596.8 with 335 degrees of freedom, and other goodness-of-fit statistics (CFI = .95; IFI = .95; TLI = .94; RMSEA = .06) were " #Atwater 2009
+f <- " v2 = 11.7, P-value = 0.16; (b) v" #Bartomeus 2010
 
 
-str_view(x,
-         regex("((\\[CHI\\]|\\[DELTA\\]G)\\s?|(\\s[^trFzQWBnD ]\\s?)|([^trFzQWBnD ]2\\s?))2?\\(\\s?\\d*\\.?\\d+\\s?(,\\s?N\\s?\\=\\s?\\d*\\,?\\d*\\,?\\d+\\s?)?\\)\\s?[<>=]\\s?\\s?\\d*,?\\d*\\.?\\d+\\s?,\\s?(([^a-z]ns)|(p\\s?[<>=]\\s?\\d?\\.\\d+e?-?\\d*))",
-               ignore.case = TRUE)
-)
+#chi sqr
+str_view(x, regex("((chi-square|v2|2)\\s?(((\\(\\s?\\d*\\.?\\d+\\s?(,\\s?N\\s?\\=\\s?\\d*\\,?\\d*\\,?\\d+\\s?)?\\))?\\s?[<>=]\\s?\\d*\\.?\\d*)|(((\\w+\\s){0,10})\\d*\\.?\\d*)))", ignore_case = T))
+
 
 #RMSEA
 #str_view(x, regex("(RMSEA\\)?\\s[<>=]?\\s?\\d*\\.\\d*)", ignore_case = T))
 #str_view(b, regex("(RMSEA\\)?\\s[<>=]?\\s?\\w+\\s?\\w+\\s?\\w+\\s?\\d*\\.?\\d*)", ignore_case = T))
 #str_view(c, regex("(root mean square error of approximation\\)?\\s[<>=]?\\s?\\w+\\s?\\w+\\s?\\w+\\s?\\d*\\.?\\d*)", ignore_case = T))
-str_view(c, regex("((error of approximation|RMSEA\\)?)\\s?\\s?[<>=]?\\s?\\w+\\s?\\w+\\s?\\w+\\s?\\d*\\.?\\d*)", ignore_case = T))
-str_view(c, regex("((error of approximation|RMSEA\\)?)\\s?\\s?[<>=]?\\s?((\\w+\\W+){,10})?\\d*\\.?\\d*)", ignore_case = T))
+#str_view(c, regex("((error of approximation|RMSEA\\)?)\\s?\\s?[<>=]?\\s?\\w+\\s?\\w+\\s?\\w+\\s?\\d*\\.?\\d*)", ignore_case = T))
+str_view(c, regex("((root mean square error of approximation|root-mean-square error of approximation|RMSEA\\)?)\\s?\\s?[<>=]?\\s?((\\w+\\s){0,10})?\\d*\\.?\\d*)", ignore_case = T))
 
 
 #N
+str_view() # search for numbers and get the location in the article
