@@ -197,6 +197,7 @@ statcheckRMSEA <-
       Value = Res$Value,
       Reported.Comparison = Res$Reported.Comparison,
       Reported.P.Value = Res$Reported.P.Value,
+      RMSEA = Res$RMSEA,
       Raw = Res$Raw
     )
     

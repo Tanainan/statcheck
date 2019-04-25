@@ -17,10 +17,11 @@ h <- "N = 641 2  = 194.08 d = 71 p = .000 NFI = .989 TLI = .990 RMSEA = .052" #B
 i <- readLines("Bradford (2008).txt")
 j <- readLines("Carmeli (2006).txt")
 k <- "tributed 8 percent (R 2 1/4 0:08, F 1/4 2:46, p 1/4 0:026), a" #case that should be detected #Carmeli
+l <- "cance, 2(24) = 40.00, p = .02, whereas the value of 2/df was below the range of 3:1 (Kline, 1998). Other goodness-of-fit indexes examined fulfilled all the requirements recommended in the literature for each one (GFI and CFI > .90; RMSEA < .08). Only"
 
 #chi sqr
-str_view(h, regex("((chi-square |chi-square of|v2(| )|(\\:|\\(|\\d) 2 )(((\\(\\d*\\.?\\d+\\s?(,\\s?N\\s?\\=\\s?\\d*\\,?\\d*\\,?\\d+\\s?)?\\))?\\s?([<>=]|(1/4)))|((\\s\\w+){0,10}))(\\s\\d*(\\.|\\:)?\\d*))", ignore_case = T))
-str_view(h, regex("((chi-square |chi-square of|v2(| )|(\\:|\\() 2 )(((\\(\\d*\\.?\\d+\\s?(,\\s?N\\s?\\=\\s?\\d*\\,?\\d*\\,?\\d+\\s?)?\\))?\\s?([<>=]|(1/4)))|((\\s\\w+){0,10}))(\\s\\d*(\\.|\\:)?\\d*))", ignore_case = T))
+str_view(e, regex("((chi-square |chi-square of|v2(| )|(\\:|\\(|\\d|\\,) 2 |(\\:|\\(|\\d|\\,) 2)(((\\(\\d*\\.?\\d+\\s?(,\\s?N\\s?\\=\\s?\\d*\\,?\\d*\\,?\\d+\\s?)?\\))?\\s?([<>=]|(1/4)))|((\\s\\w+){0,10}))(\\s\\d*(\\.|\\:)?\\d*))", ignore_case = T))
+str_view(e, regex("((chi-square |chi-square of|v2(| )|(\\:|\\() 2 )(((\\(\\d*\\.?\\d+\\s?(,\\s?N\\s?\\=\\s?\\d*\\,?\\d*\\,?\\d+\\s?)?\\))?\\s?([<>=]|(1/4)))|((\\s\\w+){0,10}))(\\s\\d*(\\.|\\:)?\\d*))", ignore_case = T))
 # str_view(y, regex("((chi-square |chi-square of|v2(| )|(\\:|\\() 2 )
 #                   ((((\\(\\d*\\.?\\d+\\s?(,\\s?N\\s?\\=\\s?\\d*\\,?\\d*\\,?\\d+\\s?)?\\))?\\s?([<>=]|(1/4)))|
 #                   ((\\s\\w+){0,10})(\\s\\d*(\\.|\\:)?\\d*))|
@@ -28,8 +29,21 @@ str_view(h, regex("((chi-square |chi-square of|v2(| )|(\\:|\\() 2 )(((\\(\\d*\\.
 
 
 #RMSEA
-str_view(j, regex("((root mean square error of approximation|root-mean-square error of approximation|\\(?RMSEA\\)?)\\s(([<>=]|(1/4))|((\\w+\\s){0,10}))\\s(\\d*(\\.|\\:)?\\d*))", ignore_case = T))
+str_view(e, regex("((root mean square error of approximation|root-mean-square error of approximation|\\(?RMSEA\\)?)\\s(([<>=]|(1/4))|((\\w+\\s){0,10}))\\s(\\d*(\\.|\\:)?\\d*))", ignore_case = T))
+
+
+# chi sqr and RMSEA
+str_view(e, regex("((chi-square |chi-square of|v2(| )|(\\:|\\(|\\d\\,) 2 |(\\:|\\(|\\d|\\,) 2)(((\\(\\d*\\.?\\d+\\s?(,\\s?N\\s?\\=\\s?\\d*\\,?\\d*\\,?\\d+\\s?)?\\))?\\s?([<>=]|(1/4)))|((\\s\\w+){0,10}))(\\s\\d*(\\.|\\:)?\\d*)(\\,|\\s|\\w+|[<>=]|\\.|\\,|\\)|\\(|\\:|\\;|\\/|\\-){0,100}((root mean square error of approximation|root-mean-square error of approximation|\\(?RMSEA\\)?)\\s(([<>=]|(1/4))|((\\w+\\s){0,10}))\\s(\\d*(\\.|\\:)?\\d*)))", ignore_case = T))
 
 
 #N
-str_view() # search for numbers and get the location in the article
+str_view(a, regex("(n\\s?(\\=|equals to|equal to|equal|equals)\\s?\\d+\\s)|(\\w+\\s\\d+\\s\\w+)", ignore_case = T)) # search for numbers and get the location in the article
+str_view(a, regex("(?(\\d+>0)\\d+)", PERL = TRUE)) # if then else
+
+# n = 
+# integer numbers in the article
+# text of numbers
+# t-test df +1 or +2 [dependent (n-1)]
+# F test btw subject numerator (1,df) +2 for example
+
+# search for smallest discrepency RMSEA reported, check roundings
