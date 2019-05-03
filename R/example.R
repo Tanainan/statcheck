@@ -9,7 +9,7 @@ z <- readLines("Gutieerrez (2006).txt")
 a <- readLines("Bassi (2012).txt")
 b <- "and the root mean square error of approximation (RMSEA) was equal to .08, which indicated"
 c <- "and the root mean square error of approximation was equal to .08, which indicated"
-d <- "bb was equal to .08, which indicated"
+d <- readLines("Nijs (2007).txt")
 e <- "a Chi-square of 596.8 with 335 degrees of freedom, and other goodness-of-fit statistics (CFI = .95; IFI = .95; TLI = .94; RMSEA = .06) were " #Atwater 2009
 f <- " v2 = 11.7, P-value = 0.16; (b) v" #Bartomeus 2010
 g <- " (v2(47) 1/4 251.4, p < .01), due to the large sample size, but the RMSEA suggested good fit (RMSEA 1/4 .056). T" #Belsky 2007
@@ -20,8 +20,8 @@ k <- "tributed 8 percent (R 2 1/4 0:08, F 1/4 2:46, p 1/4 0:026), a" #case that 
 l <- "cance, 2(24) = 40.00, p = .02, whereas the value of 2/df was below the range of 3:1 (Kline, 1998). Other goodness-of-fit indexes examined fulfilled all the requirements recommended in the literature for each one (GFI and CFI > .90; RMSEA < .08). Only"
 
 #chi sqr
-str_view(e, regex("((chi-square |chi-square of|v2(| )|(\\:|\\(|\\d|\\,) 2 |(\\:|\\(|\\d|\\,) 2)(((\\(\\d*\\.?\\d+\\s?(,\\s?N\\s?\\=\\s?\\d*\\,?\\d*\\,?\\d+\\s?)?\\))?\\s?([<>=]|(1/4)))|((\\s\\w+){0,10}))(\\s\\d*(\\.|\\:)?\\d*))", ignore_case = T))
-str_view(e, regex("((chi-square |chi-square of|v2(| )|(\\:|\\() 2 )(((\\(\\d*\\.?\\d+\\s?(,\\s?N\\s?\\=\\s?\\d*\\,?\\d*\\,?\\d+\\s?)?\\))?\\s?([<>=]|(1/4)))|((\\s\\w+){0,10}))(\\s\\d*(\\.|\\:)?\\d*))", ignore_case = T))
+str_view(e, regex("((chi-square |chi-square of|v2(| )|w2(| )|w2/df(| )|(\\:|\\(|\\d|\\,) 2 |(\\:|\\(|\\d|\\,) 2)(((\\(\\d*\\.?\\d+\\s?(,\\s?N\\s?\\=\\s?\\d*\\,?\\d*\\,?\\d+\\s?)?\\))?\\s?([<>=]|(1/4)))|((\\s\\w+){0,20}))(\\s\\d*(\\.|\\:)?\\d*))", ignore_case = T))
+str_view(e, regex("((chi-square |chi-square of|v2(| )|w2(| )|w2/df(| )|(\\:|\\() 2 )(((\\(\\d*\\.?\\d+\\s?(,\\s?N\\s?\\=\\s?\\d*\\,?\\d*\\,?\\d+\\s?)?\\))?\\s?([<>=]|(1/4)))|((\\s\\w+){0,10}))(\\s\\d*(\\.|\\:)?\\d*))", ignore_case = T))
 # str_view(y, regex("((chi-square |chi-square of|v2(| )|(\\:|\\() 2 )
 #                   ((((\\(\\d*\\.?\\d+\\s?(,\\s?N\\s?\\=\\s?\\d*\\,?\\d*\\,?\\d+\\s?)?\\))?\\s?([<>=]|(1/4)))|
 #                   ((\\s\\w+){0,10})(\\s\\d*(\\.|\\:)?\\d*))|
@@ -33,7 +33,7 @@ str_view(e, regex("((root mean square error of approximation|root-mean-square er
 
 
 # chi sqr and RMSEA
-str_view(e, regex("((chi-square |chi-square of|v2(| )|(\\:|\\(|\\d\\,) 2 |(\\:|\\(|\\d|\\,) 2)(((\\(\\d*\\.?\\d+\\s?(,\\s?N\\s?\\=\\s?\\d*\\,?\\d*\\,?\\d+\\s?)?\\))?\\s?([<>=]|(1/4)))|((\\s\\w+){0,10}))(\\s\\d*(\\.|\\:)?\\d*)(\\,|\\s|\\w+|[<>=]|\\.|\\,|\\)|\\(|\\:|\\;|\\/|\\-){0,100}((root mean square error of approximation|root-mean-square error of approximation|\\(?RMSEA\\)?)\\s(([<>=]|(1/4))|((\\w+\\s){0,10}))\\s(\\d*(\\.|\\:)?\\d*)))", ignore_case = T))
+str_view(l, regex("((chi-square |chi-square of|v2(| )|w2(| )|w2/df(| )|(\\:|\\(|\\d\\,) 2 |(\\:|\\(|\\d|\\,) 2)(((\\(\\d*\\.?\\d+\\s?(,\\s?N\\s?\\=\\s?\\d*\\,?\\d*\\,?\\d+\\s?)?\\))?\\s?([<>=]|(1/4)))|((\\s\\w+){0,20}))(\\s\\d*(\\.|\\:)?\\d*)(\\,|\\s|\\w+|[<>=]|\\.|\\,|\\)|\\(|\\:|\\;|\\/|\\-){0,100}((root mean square error of approximation|root-mean-square error of approximation|\\(?RMSEA\\)?)\\s(([<>=]|(1/4))|((\\w+\\s){0,10}))\\s(\\d*(\\.|\\:)?\\d*)))", ignore_case = T))
 
 
 #N
@@ -47,3 +47,16 @@ str_view(a, regex("(?(\\d+>0)\\d+)", PERL = TRUE)) # if then else
 # F test btw subject numerator (1,df) +2 for example
 
 # search for smallest discrepency RMSEA reported, check roundings
+
+
+sub("Berlin, Germany", "", a, fixed = T)
+
+#extracting the whole page
+txt[nchar(txt)==0]="\n"
+txt = strsplit(paste(txt,collapse=""),"\n")[[1]]
+txt[grepl("((root mean square error of approximation|root-mean-square error of approximation|\\(?RMSEA\\)?)\\s(([<>=]|(1/4))|((\\w+\\s){0,10}))\\s(\\d*(\\.|\\:)?\\d*))",txt,ignore.case = T)]
+
+
+a[nchar(a)==0]="\n"
+a = strsplit(paste(a,collapse=""),"\n")[[1]]
+a[grepl("((root mean square error of approximation|root-mean-square error of approximation|\\(?RMSEA\\)?)\\s(([<>=]|(1/4))|((\\w+\\s){0,10}))\\s(\\d*(\\.|\\:)?\\d*))",a,ignore.case = T)]

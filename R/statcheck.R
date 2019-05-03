@@ -1,5 +1,6 @@
-statcheckRMSEA <-
-  function(x) {
+library(plyr)
+statcheck <-
+  function(x) {{
     
     # Create empty data frame for main result:
     Res <-
@@ -11,12 +12,12 @@ statcheckRMSEA <-
         Test.Comparison = NULL,
         Value = NULL,
         Reported.Comparison = NULL,
-        Reported.P.Value = NULL,
+        #Reported.P.Value = NULL,
         RMSEA = NULL, # must locate chi-sqr and use RMSEA after that chi-sqr
         N = NULL,
         Location = NULL,
         stringsAsFactors = FALSE,
-        dec = NULL,
+        #dec = NULL,
         testdec = NULL
       )
     
@@ -37,10 +38,12 @@ statcheckRMSEA <-
       
       # extract Chis2-values:
       
-      # Get location of chi values or delta G in text:
+      # Get location of chi values in text:
       chi2Loc <-
         gregexpr(
-          "((\\[CHI\\]|\\[DELTA\\]G)\\s?|(\\s[^trFzQWBnD ]\\s?)|([^trFzQWBnD ]2\\s?))2?\\(\\s?\\d*\\.?\\d+\\s?(,\\s?N\\s?\\=\\s?\\d*\\,?\\d*\\,?\\d+\\s?)?\\)\\s?[<>=]\\s?\\s?\\d*,?\\d*\\.?\\d+\\s?,\\s?(([^a-z]ns)|(p\\s?[<>=]\\s?\\d?\\.\\d+e?-?\\d*))",
+          #"((\\[CHI\\]|\\[DELTA\\]G)\\s?|(\\s[^trFzQWBnD ]\\s?)|([^trFzQWBnD ]2\\s?))2?\\(\\s?\\d*\\.?\\d+\\s?(,\\s?N\\s?\\=\\s?\\d*\\,?\\d*\\,?\\d+\\s?)?\\)\\s?[<>=]\\s?\\s?\\d*,?\\d*\\.?\\d+\\s?,\\s?(([^a-z]ns)|(p\\s?[<>=]\\s?\\d?\\.\\d+e?-?\\d*))",
+          #"((chi-square |chi-square of|v2(| )|w2(| )|w2/df(| )|(\\:|\\(|\\d|\\,) 2 |(\\:|\\(|\\d|\\,) 2)(((\\(\\d*\\.?\\d+\\s?(,\\s?N\\s?\\=\\s?\\d*\\,?\\d*\\,?\\d+\\s?)?\\))?\\s?([<>=]|(1/4)))|((\\s\\w+){0,20}))(\\s\\d*(\\.|\\:)?\\d*))",
+          "((chi-square |chi-square of|v2(| )|w2(| )|w2/df(| )|(\\:|\\(|\\d\\,) 2 |(\\:|\\(|\\d|\\,) 2)(((\\(\\d*\\.?\\d+\\s?(,\\s?N\\s?\\=\\s?\\d*\\,?\\d*\\,?\\d+\\s?)?\\))?\\s?([<>=]|(1/4)))|((\\s\\w+){0,20}))(\\s\\d*(\\.|\\:)?\\d*)(\\,|\\s|\\w+|[<>=]|\\.|\\,|\\)|\\(|\\:|\\;|\\/|\\-){0,100}((root mean square error of approximation|root-mean-square error of approximation|\\(?RMSEA\\)?)\\s(([<>=]|(1/4))|((\\w+\\s){0,10}))\\s(\\d*(\\.|\\:)?\\d*)))",
           txt,
           ignore.case = TRUE
         )[[1]]
@@ -114,16 +117,51 @@ statcheckRMSEA <-
             x[1] + attr(x, "match.length")[1] - 1)
         )
         
-        # Extract p-values
-        suppressWarnings(pValsChar <-
-                           substring(
-                             sub("^.*?\\(", "", chi2Raw),
-                             sapply(nums, '[', 3),
-                             sapply(nums, function(x)
-                               x[3] + attr(x, "match.length")[3] - 1)
-                           ))
+        # Get location of RMSEA
+        RMSEALoc = regexpr("((root mean square error of approximation|root-mean-square error of approximation|\\(?RMSEA\\)?)\\s(([<>=]|(1/4))|((\\w+\\s){0,10}))\\s(\\d*(\\.|\\:)?\\d*))",
+                           chi2Loc, ignore.case = T)
+
+        RMSEAvalue <-
+          substring(chi2Loc, RMSEALoc, RMSEALoc + attr(RMSEALoc, "match.length") - 1)
+        substr(RMSEAvalue, 1, 1)[grepl("\\d", substr(RMSEAvalue, 1, 1))] <-
+          " "
         
-        suppressWarnings(pVals <- as.numeric(pValsChar))
+        numsRMSEA <-
+          gregexpr(
+            "(\\-?\\s?\\d*\\.?\\d+\\s?e?-?\\d*)",
+            sub("^.*?\\(", "", RMSEAvalue),
+            ignore.case = TRUE
+          )
+        
+        
+        # Extract RMSEA
+        RMSEA <-
+          as.numeric(substring(
+            sub("^.*?\\(", "", RMSEAvalue),
+            sapply(numsRMSEA, '[', 1),
+            sapply(numsRMSEA, function(x)
+              x[1] + attr(x, "match.length")[1] - 1)
+          ))
+        
+        # Extract chi2-values
+        # suppressWarnings(chi2ValsChar <-
+        #                    substring(
+        #                      sub("^.*?\\(", "", chi2Raw),
+        #                      sapply(nums, '[', 2),
+        #                      sapply(nums, function(x)
+        #                        x[2] + attr(x, "match.length")[2] - 1)
+        #                    ))
+        
+        # Extract p-values
+        # suppressWarnings(pValsChar <-
+        #                    substring(
+        #                      sub("^.*?\\(", "", chi2Raw),
+        #                      sapply(nums, '[', 3),
+        #                      sapply(nums, function(x)
+        #                        x[3] + attr(x, "match.length")[3] - 1)
+        #                    ))
+        # 
+        # suppressWarnings(pVals <- as.numeric(pValsChar))
         
         # Extract (in)equality
         eqLoc <-
@@ -138,9 +176,9 @@ statcheckRMSEA <-
         pEq[grepl("ns", chi2Raw, ignore.case = TRUE)] <- "ns"
         
         # determine number of decimals of p value
-        dec <-
-          attr(regexpr("\\.\\d+", pValsChar), "match.length") - 1
-        dec[dec < 0] <- 0
+        # dec <-
+        #   attr(regexpr("\\.\\d+", pValsChar), "match.length") - 1
+        # dec[dec < 0] <- 0
         
         # Create data frame:
         chi2Res <- data.frame(
@@ -151,13 +189,13 @@ statcheckRMSEA <-
           Test.Comparison = testEq,
           Value = chi2Vals,
           Reported.Comparison = pEq,
-          Reported.P.Value = pVals,
+          #Reported.P.Value = pVals,
           RMSEA = NA, # find a way to extract RMSEA
           N = NA,     # find a way to extract N
           Location = chi2Loc,
           Raw = chi2Raw_inclN,
           stringsAsFactors = FALSE,
-          dec = dec,
+          #dec = dec,
           testdec = testdec
         )
         
@@ -176,10 +214,10 @@ statcheckRMSEA <-
     Res <- ddply(Res, .(Source), function(x)
       x[order(x$Location), ])
     
-    if (nrow(Res) > 0) {
-      # remove p values greater than one
-      Res <- Res[Res$Reported.P.Value <= 1 |
-                   is.na(Res$Reported.P.Value), ]
+    # if (nrow(Res) > 0) {
+    #   # remove p values greater than one
+    #   Res <- Res[Res$Reported.P.Value <= 1 |
+    #                is.na(Res$Reported.P.Value), ]
     }
     
     ###---------------------------------------------------------------------
@@ -196,7 +234,7 @@ statcheckRMSEA <-
       Test.Comparison = Res$Test.Comparison,
       Value = Res$Value,
       Reported.Comparison = Res$Reported.Comparison,
-      Reported.P.Value = Res$Reported.P.Value,
+      #Reported.P.Value = Res$Reported.P.Value,
       RMSEA = Res$RMSEA,
       Raw = Res$Raw
     )
