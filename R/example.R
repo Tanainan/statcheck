@@ -29,20 +29,30 @@ str_view(e, regex("((chi-square |chi-square of|v2(| )|w2(| )|w2/df(| )|(\\:|\\()
 
 
 #RMSEA
-str_view(i, regex("((root mean square error of approximation|root-mean-square error of approximation|\\(?RMSEA\\)?)\\s(([<>=]|(1/4))|((\\w+\\s){0,10}))\\s(\\d*(\\.|\\:)?\\d*))", ignore_case = T))
-
+str_view(z, regex("((root mean square error of approximation|root-mean-square error of approximation|\\(?RMSEA\\)?)\\s(([<>=]|(1/4))|((\\w+\\s){0,10}))\\s(\\d*(\\.|\\:)?\\d*))", ignore_case = T))
+rrr <- str_extract(z, regex("((root mean square error of approximation|root-mean-square error of approximation|\\(?RMSEA\\)?)\\s(([<>=]|(1/4))|((\\w+\\s){0,10}))\\s(\\d*(\\.|\\:)?\\d*))", ignore_case = T))
+rrr <- rrr[!is.na(rrr)]
+RMSEA <- str_extract(rrr, regex("\\.\\d+"))
+RMSEA <- RMSEA[!is.na(RMSEA)]
+RMSEA
 
 # chi sqr and RMSEA
 str_view(l, regex("((chi-square |chi-square of|v2(| )|w2(| )|w2/df(| )|(\\:|\\(|\\d\\,) 2 |(\\:|\\(|\\d|\\,) 2)(((\\(\\d*\\.?\\d+\\s?(,\\s?N\\s?\\=\\s?\\d*\\,?\\d*\\,?\\d+\\s?)?\\))?\\s?([<>=]|(1/4)))|((\\s\\w+){0,20}))(\\s\\d*(\\.|\\:)?\\d*)(\\,|\\s|\\w+|[<>=]|\\.|\\,|\\)|\\(|\\:|\\;|\\/|\\-){0,100}((root mean square error of approximation|root-mean-square error of approximation|\\(?RMSEA\\)?)\\s(([<>=]|(1/4))|((\\w+\\s){0,10}))\\s(\\d*(\\.|\\:)?\\d*)))", ignore_case = T))
 
 
 #N
-aaa <- str_extract(i, regex("(n\\s?(\\=|equals to|equal to|equal|equals)\\s?\\d\\d+\\s)|(\\w+\\s(?!0)\\d\\d+\\s\\w+)", ignore_case = T)) # search for numbers and get the location in the article
+aaa <- str_extract(z, regex("(n\\s?(\\=|equals to|equal to|equal|equals)\\s?\\d\\d+\\s)|(\\w+\\s(?!0)\\d\\d+\\s\\w+)", ignore_case = T)) # search for numbers and get the location in the article
 aaa <- aaa[!is.na(aaa)]
 N <- str_extract(aaa, regex("\\d+"))
 N <- N[!is.na(N)]
 N
 
+# df will be from the text of chi sqr
+ddd <- str_extract(z, regex("((((degrees of freedom of)\\s\\d+)|(df|( |\\()d|\\()\\s?\\=\\s?\\d+\\s?)|(\\s\\d+\\s?(df|degrees of freedom|\\)))|((2|2 )\\(\\d+\\)))", ignore_case = T))
+ddd <- ddd[!is.na(ddd)]
+df <- str_extract(ddd, regex("(?!2)\\d+"))
+df <- df[!is.na(df)]
+df
 
 # n = 
 # integer numbers in the article

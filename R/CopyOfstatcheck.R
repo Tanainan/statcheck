@@ -7,12 +7,13 @@ statcheck <-
       data.frame(
         Source = NULL,
         Statistic = NULL,
-        df1 = NULL,
+        df = NULL,
         Test.Comparison = NULL,
         Value = NULL,
         Reported.Comparison = NULL,
-        RMSEA = NULL, # must locate chi-sqr and use RMSEA after that chi-sqr
-        N = NULL
+        RMSEA = NULL, 
+        N = NULL,
+        Computed = NULL
       )
     
     class(Res) <- c("statcheck", "data.frame")
@@ -31,23 +32,17 @@ statcheck <-
       #---------------------------
       
       # Get location of sample size (from all the integers in the article)
-      NLoc <- gregexpr("(\\s\\d+\\s)|(\\s\\=?\\s?\\d+\\))", txt, ignore.case = T)
-      N <-
-        as.numeric(substring(
-          gsub("^.*?\\(", "", NLoc),
-          sapply(nums, '[', 1),
-          sapply(nums, function(x)
-            x[1] + attr(x, "match.length")[1] - 1)
-        ))
+      aaa <- str_extract(txt, regex("(n\\s?(\\=|equals to|equal to|equal|equals)\\s?\\d\\d+\\s)|(\\w+\\s(?!0)\\d\\d+\\s\\w+)", ignore_case = T)) # search for numbers and get the location in the article
+      aaa <- aaa[!is.na(aaa)]
+      N <- str_extract(aaa, regex("\\d+"))
+      N <- N[!is.na(N)]
       
-      
+      for (j in 1:length(N)){
       # extract Chis2-values:
       
       # Get location of chi values in text:
       chi2Loc <-
         gregexpr(
-          #"((\\[CHI\\]|\\[DELTA\\]G)\\s?|(\\s[^trFzQWBnD ]\\s?)|([^trFzQWBnD ]2\\s?))2?\\(\\s?\\d*\\.?\\d+\\s?(,\\s?N\\s?\\=\\s?\\d*\\,?\\d*\\,?\\d+\\s?)?\\)\\s?[<>=]\\s?\\s?\\d*,?\\d*\\.?\\d+\\s?,\\s?(([^a-z]ns)|(p\\s?[<>=]\\s?\\d?\\.\\d+e?-?\\d*))",
-          #"((chi-square |chi-square of|v2(| )|w2(| )|w2/df(| )|(\\:|\\(|\\d|\\,) 2 |(\\:|\\(|\\d|\\,) 2)(((\\(\\d*\\.?\\d+\\s?(,\\s?N\\s?\\=\\s?\\d*\\,?\\d*\\,?\\d+\\s?)?\\))?\\s?([<>=]|(1/4)))|((\\s\\w+){0,20}))(\\s\\d*(\\.|\\:)?\\d*))",
           "((chi-square |chi-square of|v2(| )|w2(| )|w2/df(| )|(\\:|\\(|\\d\\,) 2 |(\\:|\\(|\\d|\\,) 2)(((\\(\\d*\\.?\\d+\\s?(,\\s?N\\s?\\=\\s?\\d*\\,?\\d*\\,?\\d+\\s?)?\\))?\\s?([<>=]|(1/4)))|((\\s\\w+){0,20}))(\\s\\d*(\\.|\\:)?\\d*)(\\,|\\s|\\w+|[<>=]|\\.|\\,|\\)|\\(|\\:|\\;|\\/|\\-){0,100}((root mean square error of approximation|root-mean-square error of approximation|\\(?RMSEA\\)?)\\s(([<>=]|(1/4))|((\\w+\\s){0,10}))\\s(\\d*(\\.|\\:)?\\d*)))",
           txt,
           ignore.case = TRUE
@@ -88,13 +83,18 @@ statcheck <-
           )
         
         # Extract df:
-        df <-
-          as.numeric(substring(
-            sub("^.*?\\(", "", chi2Raw),
-            sapply(nums, '[', 1),
-            sapply(nums, function(x)
-              x[1] + attr(x, "match.length")[1] - 1)
-          ))
+        ddd <- str_extract(chi2Raw, regex("((((degrees of freedom of)\\s\\d+)|(df|( |\\()d|\\()\\s?\\=\\s?\\d+\\s?)|(\\s\\d+\\s?(df|degrees of freedom|\\)))|((2|2 )\\(\\d+\\)))", ignore_case = T))
+        ddd <- ddd[!is.na(ddd)]
+        df <- str_extract(ddd, regex("(?!2)\\d+"))
+        df <- df[!is.na(df)]
+      
+        # df <-
+        #   as.numeric(substring(
+        #     sub("^.*?\\(", "", chi2Raw),
+        #     sapply(nums, '[', 1),
+        #     sapply(nums, function(x)
+        #       x[1] + attr(x, "match.length")[1] - 1)
+        #   ))
         
         # Extract chi2-values
         suppressWarnings(chi2ValsChar <-
@@ -122,31 +122,11 @@ statcheck <-
             x[1] + attr(x, "match.length")[1] - 1)
         )
         
-        # Get location of RMSEA
-        RMSEALoc = regexpr("((root mean square error of approximation|root-mean-square error of approximation|\\(?RMSEA\\)?)\\s(([<>=]|(1/4))|((\\w+\\s){0,10}))\\s(\\d*(\\.|\\:)?\\d*))",
-                           chi2Loc, ignore.case = T)
-
-        RMSEAvalue <-
-          substring(chi2Loc, RMSEALoc, RMSEALoc + attr(RMSEALoc, "match.length") - 1)
-        substr(RMSEAvalue, 1, 1)[grepl("\\d", substr(RMSEAvalue, 1, 1))] <-
-          " "
-        
-        numsRMSEA <-
-          gregexpr(
-            "(\\-?\\s?\\d*\\.?\\d+\\s?e?-?\\d*)",
-            sub("^.*?\\(", "", RMSEAvalue),
-            ignore.case = TRUE
-          )
-        
-        
-        # Extract RMSEA
-        RMSEA <-
-          as.numeric(substring(
-            sub("^.*?\\(", "", RMSEAvalue),
-            sapply(numsRMSEA, '[', 1),
-            sapply(numsRMSEA, function(x)
-              x[1] + attr(x, "match.length")[1] - 1)
-          ))
+        # Get RMSEA
+        rrr <- str_extract(chi2Raw, regex("((root mean square error of approximation|root-mean-square error of approximation|\\(?RMSEA\\)?)\\s(([<>=]|(1/4))|((\\w+\\s){0,10}))\\s(\\d*(\\.|\\:)?\\d*))", ignore_case = T))
+        rrr <- rrr[!is.na(rrr)]
+        RMSEA <- str_extract(rrr, regex("\\.\\d+"))
+        RMSEA <- RMSEA[!is.na(RMSEA)]
         
         # Extract chi2-values
         # suppressWarnings(chi2ValsChar <-
@@ -185,31 +165,33 @@ statcheck <-
         #   attr(regexpr("\\.\\d+", pValsChar), "match.length") - 1
         # dec[dec < 0] <- 0
         
+        Computed <- ((sqrt(as.numeric(chi2Vals)-as.numeric(df)))/(sqrt(as.numeric(df)*(as.numeric(N)-1))))
+        
         # Create data frame:
         chi2Res <- data.frame(
           Source = names(x)[i],
           Statistic = "Chi2",
-          df1 = df,
-          df2 = NA,
+          df = df,
+          #df2 = NA,
           Test.Comparison = testEq,
           Value = chi2Vals,
           Reported.Comparison = pEq,
-          #Computed = ((sqrt(Statistic-df1))/(sqrt(df(N-1)))),
+          Computed = Computed,
           #Reported.P.Value = pVals,
-          RMSEA = NA, # find a way to extract RMSEA
-          N = NA,     # find a way to extract N
+          RMSEA = RMSEA, # find a way to extract RMSEA
+          N = N,     # find a way to extract N
           Location = chi2Loc,
-          Raw = chi2Raw_inclN,
-          stringsAsFactors = FALSE,
+          Raw = chi2Raw_inclN
+          #stringsAsFactors = FALSE,
           #dec = dec,
-          testdec = testdec
+          #testdec = testdec
         )
         
         # Append, clean and close:
         Res <- rbind(Res, chi2Res)
         rm(chi2Res)
         
-      }
+      }}
       
       #----------------------
       
@@ -234,15 +216,16 @@ statcheck <-
     Res <- data.frame(
       Source = Res$Source,
       Statistic = Res$Statistic,
-      df1 = Res$df1,
-      df2 = Res$df2,
+      df = Res$df,
+      #df2 = Res$df2,
       N = Res$N,
       Test.Comparison = Res$Test.Comparison,
       Value = Res$Value,
       Reported.Comparison = Res$Reported.Comparison,
       #Reported.P.Value = Res$Reported.P.Value,
       RMSEA = Res$RMSEA,
-      Raw = Res$Raw
+      Raw = Res$Raw,
+      Computed.RMSEA = Res$Computed
     )
     
     class(Res) <- c("statcheck", "data.frame")
