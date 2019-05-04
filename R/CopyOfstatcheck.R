@@ -8,17 +8,11 @@ statcheck <-
         Source = NULL,
         Statistic = NULL,
         df1 = NULL,
-        df2 = NULL,
         Test.Comparison = NULL,
         Value = NULL,
         Reported.Comparison = NULL,
-        #Reported.P.Value = NULL,
         RMSEA = NULL, # must locate chi-sqr and use RMSEA after that chi-sqr
-        N = NULL,
-        Location = NULL,
-        stringsAsFactors = FALSE,
-        #dec = NULL,
-        testdec = NULL
+        N = NULL
       )
     
     class(Res) <- c("statcheck", "data.frame")

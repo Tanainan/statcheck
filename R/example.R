@@ -29,7 +29,7 @@ str_view(e, regex("((chi-square |chi-square of|v2(| )|w2(| )|w2/df(| )|(\\:|\\()
 
 
 #RMSEA
-str_view(e, regex("((root mean square error of approximation|root-mean-square error of approximation|\\(?RMSEA\\)?)\\s(([<>=]|(1/4))|((\\w+\\s){0,10}))\\s(\\d*(\\.|\\:)?\\d*))", ignore_case = T))
+str_view(i, regex("((root mean square error of approximation|root-mean-square error of approximation|\\(?RMSEA\\)?)\\s(([<>=]|(1/4))|((\\w+\\s){0,10}))\\s(\\d*(\\.|\\:)?\\d*))", ignore_case = T))
 
 
 # chi sqr and RMSEA
@@ -37,8 +37,12 @@ str_view(l, regex("((chi-square |chi-square of|v2(| )|w2(| )|w2/df(| )|(\\:|\\(|
 
 
 #N
-str_view(a, regex("(n\\s?(\\=|equals to|equal to|equal|equals)\\s?\\d+\\s)|(\\w+\\s\\d+\\s\\w+)", ignore_case = T)) # search for numbers and get the location in the article
-str_view(a, regex("(?(\\d+>0)\\d+)", PERL = TRUE)) # if then else
+aaa <- str_extract(i, regex("(n\\s?(\\=|equals to|equal to|equal|equals)\\s?\\d\\d+\\s)|(\\w+\\s(?!0)\\d\\d+\\s\\w+)", ignore_case = T)) # search for numbers and get the location in the article
+aaa <- aaa[!is.na(aaa)]
+N <- str_extract(aaa, regex("\\d+"))
+N <- N[!is.na(N)]
+N
+
 
 # n = 
 # integer numbers in the article
@@ -49,7 +53,9 @@ str_view(a, regex("(?(\\d+>0)\\d+)", PERL = TRUE)) # if then else
 # search for smallest discrepency RMSEA reported, check roundings
 
 
-sub("Berlin, Germany", "", a, fixed = T)
+str_view(a, regex("\\s\\(?\\s?\\=?\\s?\\d+\\)?\\s", ignore_case = T))
+
+
 
 #extracting the whole page
 txt[nchar(txt)==0]="\n"
