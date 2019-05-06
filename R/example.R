@@ -18,6 +18,10 @@ i <- readLines("Bradford (2008).txt")
 j <- readLines("Carmeli (2006).txt")
 k <- "tributed 8 percent (R 2 1/4 0:08, F 1/4 2:46, p 1/4 0:026), a" #case that should be detected #Carmeli
 l <- "cance, 2(24) = 40.00, p = .02, whereas the value of 2/df was below the range of 3:1 (Kline, 1998). Other goodness-of-fit indexes examined fulfilled all the requirements recommended in the literature for each one (GFI and CFI > .90; RMSEA < .08). Only"
+m <- readLines("Sani (2008).txt")
+n <- "inadequate: 2(4) 13.39, p .05; CFI 0.98; RMSEA .12." #Sani 2008
+
+
 
 #chi sqr
 str_view(e, regex("((chi-square |chi-square of|v2(| )|w2(| )|w2/df(| )|(\\:|\\(|\\d|\\,) 2 |(\\:|\\(|\\d|\\,) 2)(((\\(\\d*\\.?\\d+\\s?(,\\s?N\\s?\\=\\s?\\d*\\,?\\d*\\,?\\d+\\s?)?\\))?\\s?([<>=]|(1/4)))|((\\s\\w+){0,20}))(\\s\\d*(\\.|\\:)?\\d*))", ignore_case = T))
@@ -37,7 +41,27 @@ RMSEA <- RMSEA[!is.na(RMSEA)]
 RMSEA
 
 # chi sqr and RMSEA
-str_view(l, regex("((chi-square |chi-square of|v2(| )|w2(| )|w2/df(| )|(\\:|\\(|\\d\\,) 2 |(\\:|\\(|\\d|\\,) 2)(((\\(\\d*\\.?\\d+\\s?(,\\s?N\\s?\\=\\s?\\d*\\,?\\d*\\,?\\d+\\s?)?\\))?\\s?([<>=]|(1/4)))|((\\s\\w+){0,20}))(\\s\\d*(\\.|\\:)?\\d*)(\\,|\\s|\\w+|[<>=]|\\.|\\,|\\)|\\(|\\:|\\;|\\/|\\-){0,100}((root mean square error of approximation|root-mean-square error of approximation|\\(?RMSEA\\)?)\\s(([<>=]|(1/4))|((\\w+\\s){0,10}))\\s(\\d*(\\.|\\:)?\\d*)))", ignore_case = T))
+str_view(n, regex("((chi-square |chi-square of|v2(| )|w2(| )|w2/df(| )|(\\:|\\(|\\d\\,) 2 |(\\:|\\(|\\d|\\,) 2)(\\s*\\w*\\d*\\W*){0,100}((root mean square error of approximation|root-mean-square error of approximation|\\(?RMSEA\\)?)\\s(([<>=]|(1/4))|((\\w+\\s){0,10}))\\s(\\d*(\\.|\\:)?\\d*)))", ignore_case = T))
+chi2Raw <- str_extract(a, regex("((chi-square |chi-square of|v2(| )|w2(| )|w2/df(| )|(\\:|\\(|\\d\\,) 2 |(\\:|\\(|\\d|\\,) 2)(((\\(\\d*\\.?\\d+\\s?(,\\s?N\\s?\\=\\s?\\d*\\,?\\d*\\,?\\d+\\s?)?\\))?\\s?([<>=]|(1/4)))|((\\s\\w+){0,20}))(\\s\\d*(\\.|\\:)?\\d*)(\\,|\\s|\\w+|[<>=]|\\.|\\,|\\)|\\(|\\:|\\;|\\/|\\-){0,100}((root mean square error of approximation|root-mean-square error of approximation|\\(?RMSEA\\)?)\\s(([<>=]|(1/4))|((\\w+\\s){0,10}))\\s(\\d*(\\.|\\:)?\\d*)))", ignore_case = T))
+chi2Raw <- chi2Raw[!is.na(chi2Raw)]
+Chi2 <- str_extract(chi2Raw, regex("\\d+\\.\\d*"))
+Chi2 <- Chi2[!is.na(Chi2)]
+Chi2
+
+
+ccc <- str_subset(d, regex("(((root mean square error of approximation|root-mean-square error of approximation|\\(?RMSEA\\)?)\\s(([<>=]|(1/4))|((\\w+\\s){0,10}))\\s(\\d*(\\.|\\:)?\\d*)))", ignore_case = T))
+chi2Loc <- str_extract(ccc, regex("((chi-square |chi-square of|v2(| )|w2(| )|w2/df(| )|(\\:|\\(|\\d\\,) 2 |(\\:|\\(|\\d|\\,) 2)(((\\(\\d*\\.?\\d+\\s?(,\\s?N\\s?\\=\\s?\\d*\\,?\\d*\\,?\\d+\\s?)?\\))?\\s?([<>=]|(1/4)))|((\\s\\w+){0,20}))(\\s\\d*(\\.|\\:)?\\d*))",
+                             ignore_case = TRUE))
+chi2Loc <- str_extract_all(ccc, regex("((chi-square |chi-square of|v2(| )|w2(| )|w2/df(| )|(\\:|\\(|\\d\\,) 2 |(\\:|\\(|\\d|\\,) 2)(((\\(\\d*\\.?\\d+\\s?(,\\s?N\\s?\\=\\s?\\d*\\,?\\d*\\,?\\d+\\s?)?\\))?\\s?([<>=]|(1/4)))|((\\s\\w+){0,20}))(\\s\\d*(\\.|\\:)?\\d*))",
+                                  ignore_case = TRUE))
+
+Chi2 <- str_extract(chi2Loc, regex("\\d?\\.\\d+"))
+
+
+
+
+
+
 
 
 #N

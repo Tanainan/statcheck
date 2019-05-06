@@ -165,7 +165,7 @@ statcheck <-
         #   attr(regexpr("\\.\\d+", pValsChar), "match.length") - 1
         # dec[dec < 0] <- 0
         
-        Computed <- ((sqrt(as.numeric(chi2Vals)-as.numeric(df)))/(sqrt(as.numeric(df)*(as.numeric(N)-1))))
+        Computed <- round(((sqrt(as.numeric(chi2Vals)-as.numeric(df)))/(sqrt(as.numeric(df)*(as.numeric(N)-1)))),3)
         
         # Create data frame:
         chi2Res <- data.frame(
@@ -224,8 +224,9 @@ statcheck <-
       Reported.Comparison = Res$Reported.Comparison,
       #Reported.P.Value = Res$Reported.P.Value,
       RMSEA = Res$RMSEA,
-      Raw = Res$Raw,
-      Computed.RMSEA = Res$Computed
+      Computed.RMSEA = Res$Computed,
+      Raw = Res$Raw
+      
     )
     
     class(Res) <- c("statcheck", "data.frame")
