@@ -133,7 +133,8 @@ statcheck <-
         
       
         # Get RMSEA
-        rrr <- str_extract_all(chi2RMSEA, regex("((root mean square error of approximation|root-mean-square error of approximation|\\(?RMSEA\\)?)\\s(([<>=]|(1/4))|((\\w+\\s){0,10}))\\s(\\d*(\\.|\\:)?\\d*))", ignore_case = T))
+        mmm <- str_extract_all(chi2RMSEA, regex("((chi-square |chi-square of|(\\(| )v2(| )|w2(| )|w2/df(| )|(\\:|\\(|\\d\\,) 2 |(\\:|\\(|\\d|\\,) 2)(.){0,100}((root mean square error of approximation|root-mean-square error of approximation|\\(?RMSEA\\)?)\\s(([<>=]|(1/4))|((\\w+\\s){0,10}))\\s(\\d*(\\.|\\:)?\\d*)))", ignore_case = T))
+        rrr <- str_extract_all(unlist(mmm), regex("((root mean square error of approximation|root-mean-square error of approximation|\\(?RMSEA\\)?)\\s(([<>=]|(1/4))|((\\w+\\s){0,10}))\\s(\\d*(\\.|\\:)?\\d*))", ignore_case = T))
         rrr <- rrr[!is.na(rrr)]
         RMSEA <- str_extract_all(unlist(rrr), regex("\\.\\d+"))
         RMSEA <- unlist(RMSEA[!is.na(RMSEA)])
