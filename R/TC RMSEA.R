@@ -37,7 +37,7 @@ statcheck <-
       
       # Get location of chi values in text:
       chi2Loc <-
-        str_extract_all(chi2RMSEA, regex("((chi-square |chi-square of|(\\(| )v2(| )|w2(| )|w2/df(| )|(\\:|\\(|\\d|\\,) 2 |(\\:|\\(|\\d|\\,) 2)(.){0,20}(\\s\\d*(\\.|\\:)\\d+))",
+        str_extract_all(chi2RMSEA, regex("((chi-square |chi-square of|(\\(| )v2(| )|w2(| )|(\\:|\\(|\\d|\\,) 2 |(\\:|\\(|\\d|\\,) 2)(.){0,20}(\\s\\d*(\\.|\\:)\\d+))",
           ignore_case = TRUE))
 
       # Get chi value
@@ -86,7 +86,7 @@ statcheck <-
         #   )
         
         # Extract df:
-      dfdf <- str_extract_all(chi2RMSEA, regex("(chi-square |chi-square of|(\\(| )v2(| )|w2(| )|w2/df(| )|(\\:|\\(|\\d|\\,) 2 |(\\:|\\(|\\d|\\,) 2)(.){0,30}((((degrees of freedom of)\\s(?!0)\\d+)|(df|( |\\()d|\\()\\s?\\=\\s?(?!0)\\d+\\s?)|(\\s(?!0)\\d+\\s?(df|degrees of freedom|\\)))|((2|2 )\\((?!0)\\d+\\)))", ignore_case = T))
+      dfdf <- str_extract_all(chi2RMSEA, regex("(chi-square |chi-square of|(\\(| )v2(| )|w2(| )|(\\:|\\(|\\d|\\,) 2 |(\\:|\\(|\\d|\\,) 2)(.){0,30}((((degrees of freedom of)\\s(?!0)\\d+)|(df|( |\\()d|\\()\\s?\\=\\s?(?!0)\\d+\\s?)|(\\s(?!0)\\d+\\s?(df|degrees of freedom|\\)))|((2|2 )\\((?!0)\\d+\\)))", ignore_case = T))
       ddd <- str_extract_all(unlist(dfdf), regex("((((degrees of freedom of)\\s(?!0)\\d+)|(df|( |\\()d|\\()\\s?\\=\\s?(?!0)\\d+\\s?)|(\\s(?!0)\\d+\\s?(df|degrees of freedom|\\)))|((2|2 )\\((?!0)\\d+\\)))", ignore_case = T))
       ddd <- ddd[!is.na(ddd)]
       df <- str_extract_all(unlist(ddd), regex("(?!2\\()\\d+"))
@@ -133,7 +133,7 @@ statcheck <-
         
       
         # Get RMSEA
-        mmm <- str_extract_all(chi2RMSEA, regex("((chi-square |chi-square of|(\\(| )v2(| )|w2(| )|w2/df(| )|(\\:|\\(|\\d\\,) 2 |(\\:|\\(|\\d|\\,) 2)(.){0,100}((root mean square error of approximation|root-mean-square error of approximation|\\(?RMSEA\\)?)\\s(([<>=]|(1/4))|((\\w+\\s){0,10}))\\s(\\d*(\\.|\\:)?\\d*)))", ignore_case = T))
+        mmm <- str_extract_all(chi2RMSEA, regex("((chi-square |chi-square of|(\\(| )v2(| )|w2(| )|(\\:|\\(|\\d\\,) 2 |(\\:|\\(|\\d|\\,) 2)(.){0,100}((root mean square error of approximation|root-mean-square error of approximation|\\(?RMSEA\\)?)\\s(([<>=]|(1/4))|((\\w+\\s){0,10}))\\s(\\d*(\\.|\\:)?\\d*)))", ignore_case = T))
         rrr <- str_extract_all(unlist(mmm), regex("((root mean square error of approximation|root-mean-square error of approximation|\\(?RMSEA\\)?)\\s(([<>=]|(1/4))|((\\w+\\s){0,10}))\\s(\\d*(\\.|\\:)?\\d*))", ignore_case = T))
         rrr <- rrr[!is.na(rrr)]
         RMSEA <- str_extract_all(unlist(rrr), regex("\\.\\d+"))
