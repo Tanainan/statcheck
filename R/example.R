@@ -6,7 +6,7 @@ setwd("~/Downloads/Pdfs/AMOS/Done")
 x <- " fit indices: 2 (54) = 60.1, p < 0.27, goodness-of-fit index (GFI) = .94, comparative fit index (CFI) = .96, and root mean square error of approximation (RMSEA) = .03. aaaaaaaaaaaaaa"
 y <- "v2 = (6 df, p \ .01) 62.4, GFI = .99, AGFI = .99, PGFI = .13, RMSEA = .03, AIC = 140.4" #Ahmetoglu 2010
 a <- readLines("Bassi (2012).txt")
-d <- readLines("Nijs (2007).txt")
+#d <- readLines("Nijs (2007).txt") # w2/df
 e <- "a Chi-square of 596.8 with 335 degrees of freedom, and other goodness-of-fit statistics (CFI = .95; IFI = .95; TLI = .94; RMSEA = .06) were " #Atwater 2009
 f <- " v2 = 11.7, P-value = 0.16; (b) v" #Bartomeus 2010
 g <- " (v2(47) 1/4 251.4, p < .01), due to the large sample size, but the RMSEA suggested good fit (RMSEA 1/4 .056). T" #Belsky 2007
@@ -18,6 +18,7 @@ l <- "cance, 2(24) = 40.00, p = .02, whereas the value of 2/df was below the ran
 m <- readLines("Sani (2008).txt")
 n <- "inadequate: 2(4) 13.39, p .05; CFI 0.98; RMSEA .12." #Sani 2008
 o <- readLines("van der Heijden (2009).txt")
+p <- readLines("Lee (2007).txt")
 
 #chi sqr
 str_view(e, regex("((chi-square |chi-square of|(\\(| )v2(| )|w2(| )|w2/df(| )|(\\:|\\(|\\d|\\,) 2 |(\\:|\\(|\\d|\\,) 2)(.){0,20}(\\s\\d*(\\.|\\:)\\d+))", ignore_case = T))
