@@ -230,7 +230,7 @@ statcheck <-
     #   # remove p values greater than one
     #   Res <- Res[Res$Reported.P.Value <= 1 |
     #                is.na(Res$Reported.P.Value), ]
-    }
+    # }
     
     ###---------------------------------------------------------------------
     
@@ -262,6 +262,5 @@ statcheck <-
     } else {
       Res <- cat("statcheck did not find any results\n")
     }
-    
-    
-  }
+
+  }}

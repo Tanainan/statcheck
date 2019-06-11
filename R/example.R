@@ -24,7 +24,7 @@ p <- readLines("Lee (2007).txt")
 q <- readLines("Loyens (2007).txt")
 r <- readLines("Zhao (2013).txt")
 
-oo <- "ooo RMSEA oifj RMSEA"
+oo <- "ooo RMSEA > 0.45"
 
 #chi sqr
 str_view(e, regex("((chi-square |chi-square of|(\\(| )v2(| )|w2(| )|w2/df(| )|(\\:|\\(|\\d|\\,) 2 |(\\:|\\(|\\d|\\,) 2)(.){0,20}(\\s\\d*(\\.|\\:)\\d+))", ignore_case = T))
