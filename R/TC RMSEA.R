@@ -33,7 +33,7 @@ statcheck <-
       
       #---------------------------
       
-      txt <- o
+      txt <- e
       
       
       # extract Chis2-values by locating RMSEA first:
@@ -57,11 +57,12 @@ statcheck <-
       Chi2 <- str_extract(unlist(chi2Loc2), regex("\\d*\\.\\d+"))
         
       # Extract df:
-      ddd <- str_extract_all(unlist(chi2Loc1), regex("((df|d)\\s?([<>=]|(1/4))|(2|2\\s)\\(|degrees of freedom of)\\s?(?!0)\\d+\\s?\\,?|\\s(?!0)\\d+\\s(df|degrees of freedom)", ignore_case = T))
+      ddd <- str_extract_all(unlist(chi2Loc1), regex("((df|d|d.f.)\\s?([<>=]|(1/4))|(2|2\\s)\\(|degrees of freedom of)\\s?(?!0)\\d+\\s?\\,?|\\s(?!0)\\d+\\s(df|degrees of freedom)|\\(\\d+\\)", ignore_case = T))
       ddd <- ddd[!is.na(ddd)]
       ddd <- str_replace(unlist(ddd), "1/4", "")
       df <- str_extract_all(unlist(ddd), regex("(?!2\\s?\\()\\d+"))
       df <- unlist(df[!is.na(df)])
+
       
     
       # Get RMSEA
