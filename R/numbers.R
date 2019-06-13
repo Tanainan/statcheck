@@ -1,6 +1,6 @@
 # extract written number in the text
 #word <- (unlist(str_extract_all(txt, regex("(\\w+\\shundred\\s(and\\s)?\\w+(\\-\\w+)?)|(thirteen|fourteen|fifteen|sixteen|seventeen|eighteen|nineteen|\\sten\\s|eleven|twelve)", ignore_case = T))))
-word <- (unlist(str_extract_all(s, regex("(((the|a|one|two|three|four|five|six|seven|eight|nine)?\\s)?hundred\\s(and\\s)?)?((thirteen|fourteen|fifteen|sixteen|seventeen|eighteen|nineteen|ten|eleven|twelve)|(((twenty|thirty|forty|fifty|sixty|seventy|eighty|ninety)(\\-?))?(one|two|three|four|five|six|seven|eight|nine)?))?", ignore_case = T))))
+word <- (unlist(str_extract_all(oi, regex("(((the|a|one|two|three|four|five|six|seven|eight|nine)?\\s)?hundred\\s(and\\s)?)?((thirteen|fourteen|fifteen|sixteen|seventeen|eighteen|nineteen|ten|eleven|twelve)|(((twenty|thirty|forty|fifty|sixty|seventy|eighty|ninety)(\\-?))?(one|two|three|four|five|six|seven|eight|nine)?))?", ignore_case = T))))
 word <- unlist(lapply(word, function(x) x[nchar(x) >= 1]))
 word <- str_replace_all(word, "(?!\\w+)\\s?ten\\s?", "ten")
 word <- str_replace_all(word, "(a|the) hundred", "hundred")

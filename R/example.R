@@ -7,20 +7,20 @@ a <- readLines("Bassi (2012).txt") # 9 ppl were removed from 184
 b <- readLines("Mandara (2009).txt")
 c <- readLines("Rapee (2005).txt")
 d <- readLines("Roest (2010).txt")
-
+e <- readLines("Riggs (2009a).txt")
 i <- readLines("Bradford (2008).txt")
 j <- readLines("Carmeli (2006).txt")
 m <- readLines("Sani (2008).txt")
 
 o <- readLines("van der Heijden (2009).txt")
 p <- readLines("Lee (2007).txt")
-q <- readLines("Loyens (2007).txt")
+q <- readLines("Loyens (2007).txt") # RMSEA chi2
 r <- readLines("Zhao (2013).txt")
 s <- readLines("Kark (2009).txt")
 
 oo <- "five hundred and six part"
 ooo <- "often ten intend"
-oi <- "the hundred and five"
+oi <- "oooo sixty-three pfgslj"
 
 #chi sqr
 str_view(e, regex("((chi-square |chi-square of|(\\(| )v2(| )|w2(| )|w2/df(| )|(\\:|\\(|\\d|\\,) 2 |(\\:|\\(|\\d|\\,) 2)(.){0,20}(\\s\\d*(\\.|\\:)\\d+))", ignore_case = T))

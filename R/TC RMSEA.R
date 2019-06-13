@@ -33,7 +33,7 @@ statcheck <-
       
       #---------------------------
       
-      txt <- e
+      txt <- aa
       
       
       # extract Chis2-values by locating RMSEA first:
@@ -105,7 +105,7 @@ statcheck <-
       }
       
       # check if there're multi-group models
-      multi <- unlist(str_detect(chi2RMSEALoc, regex("multigroup|multi-group", ignore_case = T)))
+      multi <- unlist(str_detect(chi2RMSEALoc, regex("multigroup|multi-group|multiple (sample|samples)|multi-sample|multisample|multiple (group|groups)", ignore_case = T)))
       multi <- unlist(str_replace_all(unlist(multi), "TRUE", "T"))
       multi <- unlist(str_replace_all(unlist(multi), "FALSE", "-"))
 
@@ -134,6 +134,7 @@ statcheck <-
 
       chi2RMSEA$Computed <- NA
       chi2RMSEA$Computed.RMSEA <- NA
+      chi2RMSEA$lavaan.RMSEA <- NA
 
       
       #Number of Ns found in the article
@@ -150,6 +151,16 @@ statcheck <-
         chi2RMSEA$Computed.RMSEA[j] <- round((chi2RMSEA$Computed[j]),deci)
       }
       
+      # some of the computed RMSEAs are NaN >>> change them to 0
+      chi2RMSEA$Computed[is.nan(chi2RMSEA$Computed)] <- 0
+      
+      # lavaan RMSEA
+      for (m in 1:nrow(chi2RMSEA)){
+        chi2RMSEA$lavaan.RMSEA[m] <- sqrt(max(c((as.numeric(chi2RMSEA$Chi2[m])/as.numeric(chi2RMSEA$N[m]))/as.numeric(chi2RMSEA$df[m]) - 1/as.numeric(chi2RMSEA$N[m]),0)))
+      }
+      
+      # discrepency regular and lavaan RMSEA
+      chi2RMSEA$discrepancy <- round((chi2RMSEA$Computed - chi2RMSEA$lavaan.RMSEA), 6)
 
       # some of the computed RMSEAs are NaN >>> change them to 0
       chi2RMSEA$Computed.RMSEA[is.nan(chi2RMSEA$Computed.RMSEA)] <- 0
@@ -165,7 +176,7 @@ statcheck <-
       
       
       chi2RMSEA <- chi2RMSEA[,c(#"Source",
-                                "Chi2","df","N","Multi.group","Computed","Computed.RMSEA","Sign","Reported.RMSEA","Consistency","Chi2.Raw","N.Raw","Total.Ns","Total.Models")] # change columns order
+                                "Chi2","df","N","Multi.group","lavaan.RMSEA","Computed","discrepancy","Computed.RMSEA","Sign","Reported.RMSEA","Consistency","Chi2.Raw","N.Raw","Total.Ns","Total.Models")] # change columns order
       }
       
       # -------------------------------------------------------------------------------------
@@ -204,7 +215,7 @@ statcheck <-
       
       
       # Get location of sample size (from all the integers in the article)
-      N.Raw <- str_extract_all(txt, regex("(n\\s?(\\=|equals to|equal to|equal|equals|(1/4))\\s?\\d\\d+\\,?\\s)|((?!\\d+)\\w+\\s(?!0)\\d\\d+\\s(?!\\d+)(?!(degrees|Jan|Feb|March|April|May|June|July|Augu|Sep|Oct|Nov|Dec))\\w+)", ignore_case = T)) # search for numbers and get the location in the article
+      N.Raw <- str_extract_all(txt, regex("(n\\s?(\\=|equals to|equal to|equal|equals|(1/4))\\s?\\d\\d+\\,?\\s)|((?!\\d+)\\w+\\,?\\s(?!0)\\d\\d+\\s(?!\\d+)(?!(degrees|Jan|Feb|March|April|May|June|July|Augu|Sep|Oct|Nov|Dec))\\w+)", ignore_case = T)) # search for numbers and get the location in the article
       N.Raw <- unlist(N.Raw[!is.na(N.Raw)])
       N.Raw <- str_replace(unlist(N.Raw), "1/4", "=")
       
@@ -243,17 +254,30 @@ statcheck <-
       chi2RMSEA$N <- chi2RMSEA$N %>% as.character() %>% as.numeric()
       chi2RMSEA$Reported.RMSEA <- chi2RMSEA$Reported.RMSEA %>% as.character() %>% as.numeric()
       
-      chi2RMSEA$Computed <- NA
-      chi2RMSEA$Computed.RMSEA <- NA
-      
-      
       chi2RMSEA$Sign = sign
       
+      chi2RMSEA$Computed <- NA
+      chi2RMSEA$Computed.RMSEA <- NA
+      chi2RMSEA$lavaan.RMSEA <- NA
+
+
+      # "regular" RMSEA
       for (l in 1:nrow(chi2RMSEA)){
         deci <- decimalplaces(chi2RMSEA$Reported.RMSEA[l])
         chi2RMSEA$Computed[l] <- ((sqrt(as.numeric(chi2RMSEA$Chi2[l])-as.numeric(chi2RMSEA$df[l])))/(sqrt(as.numeric(chi2RMSEA$df[l])*(as.numeric(chi2RMSEA$N[l])-1))))
         chi2RMSEA$Computed.RMSEA[l] <- round((chi2RMSEA$Computed[l]),deci)
       }
+      
+      # some of the computed RMSEAs are NaN >>> change them to 0
+      chi2RMSEA$Computed[is.nan(chi2RMSEA$Computed)] <- 0
+      
+      # lavaan RMSEA
+      for (m in 1:nrow(chi2RMSEA)){
+        chi2RMSEA$lavaan.RMSEA[m] <- sqrt(max(c((as.numeric(chi2RMSEA$Chi2[m])/as.numeric(chi2RMSEA$N[m]))/as.numeric(chi2RMSEA$df[m]) - 1/as.numeric(chi2RMSEA$N[m]),0)))
+      }
+      
+      # discrepency regular and lavaan RMSEA
+      chi2RMSEA$discrepancy <- round((chi2RMSEA$Computed - chi2RMSEA$lavaan.RMSEA), 6)
       
       # some of the computed RMSEAs are NaN >>> change them to 0
       chi2RMSEA$Computed.RMSEA[is.nan(chi2RMSEA$Computed.RMSEA)] <- 0
@@ -268,7 +292,7 @@ statcheck <-
       
     
       chi2RMSEA <- chi2RMSEA[,c(#"Source",
-                                "Chi2","df","N","Multi.group","Computed","Computed.RMSEA","Sign","Reported.RMSEA","Consistency","Chi2.Raw","N.Raw","Total.Ns","Total.Models")]
+                                "Chi2","df","N","Multi.group","lavaan.RMSEA","Computed","discrepancy","Computed","Computed.RMSEA","Sign","Reported.RMSEA","Consistency","Chi2.Raw","N.Raw","Total.Ns","Total.Models")]
       }    
         
           # Append, clean and close:
