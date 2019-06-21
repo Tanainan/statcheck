@@ -1,21 +1,3 @@
-# extract written number in the text
-#word <- (unlist(str_extract_all(txt, regex("(\\w+\\shundred\\s(and\\s)?\\w+(\\-\\w+)?)|(thirteen|fourteen|fifteen|sixteen|seventeen|eighteen|nineteen|\\sten\\s|eleven|twelve)", ignore_case = T))))
-word <- (unlist(str_extract_all(oi, regex("(((the|a|one|two|three|four|five|six|seven|eight|nine)?\\s)?hundred\\s(and\\s)?)?((thirteen|fourteen|fifteen|sixteen|seventeen|eighteen|nineteen|ten|eleven|twelve)|(((twenty|thirty|forty|fifty|sixty|seventy|eighty|ninety)(\\-?))?(one|two|three|four|five|six|seven|eight|nine)?))?", ignore_case = T))))
-word <- unlist(lapply(word, function(x) x[nchar(x) >= 1]))
-word <- str_replace_all(word, "(?!\\w+)\\s?ten\\s?", "ten")
-word <- str_replace_all(word, "(a|the) hundred", "hundred")
-word <- str_replace_all(word, " and ", " ")
-word <- str_replace_all(word, "-", " ")
-
-num <- data.frame(N = rep(NA, length(word)), N.Raw = rep(NA, length(word)))
-for (i in 1:length(word)){
-  num$N[i] <- unlist(word2num(word[i])[2]) %>% as.character() %>% as.numeric()
-  num$N.Raw[i] <- unlist(word2num(word[i])[1])
-}
-num <- num[!(as.numeric(num$N) < 10 | as.numeric(num$N) >= 1500),]
-num <- num[!duplicated(num$N),]
-
-
 word2num <- function(word){
   wsplit <- strsplit(tolower(word)," ")[[1]]
   one_digits <- list(zero=0, one=1, two=2, three=3, four=4, five=5,

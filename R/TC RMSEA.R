@@ -1,22 +1,16 @@
 library(plyr)
-library(words2number)
 library(dplyr)
-statcheck <-
+library(stringr)
+
+source("~/Downloads/StatCheck/StatCheck/R/getPDF.R")
+source("~/Downloads/StatCheck/StatCheck/R/numbers.R")
+
+checkRMSEA <-
   function(x) {{
     
     # Create empty data frame for main result:
     Res <-
-      data.frame(
-        Source = NULL,
-        Chi2 = NULL,
-        df = NULL,
-        N = NULL,
-        Reported.RMSEA = NULL,
-        Computed.RMSEA = NULL,
-        Sign = NULL,
-        Consistency = NULL
-        #Location = NULL
-      )
+      data.frame(NULL)
     
     class(Res) <- c("statcheck", "data.frame")
     
@@ -33,7 +27,7 @@ statcheck <-
       
       #---------------------------
       
-      txt <- b
+      #txt <- b
       
       txt <- unlist(str_replace_all(txt, "1/4", "=")) # replace "1/4" to "="
       
@@ -60,7 +54,7 @@ statcheck <-
         
       # Extract df:
       ddd <- str_extract_all(unlist(chi2Loc10), regex("((df|d|d.f.)\\s?([<>=]|(1/4))|(2|2\\s)\\(|degrees of freedom of)\\s?(?!0)\\d+\\s?\\,?|\\s(?!0)\\d+\\s(df|degrees of freedom)|\\(\\d+\\)", ignore_case = T))
-      if (length(unlist(ddd)) == 0){
+      if (length(unlist(ddd)) != length(unlist(Chi2))){
         ddd <- str_extract_all(unlist(chi2Loc2), regex("((df|d|d.f.)\\s?([<>=]|(1/4))|(2|2\\s)\\(|degrees of freedom of)\\s?(?!0)\\d+\\s?\\,?|\\s(?!0)\\d+\\s(df|degrees of freedom)|\\(\\d+\\)", ignore_case = T))
       }
       ddd <- ddd[!is.na(ddd)]

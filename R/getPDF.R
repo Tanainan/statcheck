@@ -1,0 +1,48 @@
+getPDF <- function(x) #location of PDF
+{
+  txtfiles <- character(length(x))
+  for (i in 1:length(x))
+  {
+    system(paste('pdftotext -q -enc "ASCII7" "', x[i], '"', sep = ""))
+    if (file.exists(gsub("\\.pdf$", "\\.txt", x[i]))) {
+      fileName <- gsub("\\.pdf$", "\\.txt", x[i])
+      txtfiles[i] <- readChar(fileName, file.info(fileName)$size)
+    } else{
+      warning(paste("Failure in file", x[i]))
+      txtfiles[i] <- ""
+    }
+  }
+  return(txtfiles)
+}
+## Function to check directory of PDFs:
+checkPDFdir <- # entire directory
+  function(dir,
+           subdir = TRUE,
+           ...) {
+    if (missing(dir))
+      dir <- tk_choose.dir()
+    
+    all.files <-
+      list.files(dir,
+                 pattern = "\\.pdf",
+                 full.names = TRUE,
+                 recursive = subdir)
+    files <- all.files[grepl("\\.pdf$", all.files)]
+    
+    if (length(files) == 0)
+      stop("No PDF found")
+    
+    txts <- character(length(files))
+    message("Importing PDF files...")
+    pb <- txtProgressBar(max = length(files), style = 3)
+    for (i in 1:length(files))
+    {
+      txts[i] <-  getPDF(files[i])
+      setTxtProgressBar(pb, i)
+    }
+    close(pb)
+    names(txts) <- gsub("\\.pdf$", "", basename(files))
+    return(checkRMSEA(txts, ...))
+  }
+
+
