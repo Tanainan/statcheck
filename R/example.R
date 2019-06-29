@@ -3,19 +3,19 @@ library(tidyverse)
 library(rio)
 setwd("~/Downloads/Pdfs/AMOS/Done")
 
-a <- readLines("Ahmad (2004).txt")
-b <- readLines("Ahmetoglu (2010).txt")
-c <- readLines("Alonso-Tapia (2010).txt")
-d <- readLines("Anderson (2008).txt")
-e <- readLines("Arendasy (2007).txt")
-f <- readLines("Arendasy (2012).txt")
-g <- readLines("Atwater (2009).txt")
-h <- readLines("Bakker (2007).txt")
-i <- readLines("Bakker (2008a).txt")
-j <- readLines("Bartomeus (2010).txt")
+a <- readLines("Ahmad (2004).txt") # no result found
+b <- readLines("Ahmetoglu (2010).txt") #ok
+c <- readLines("Alonso-Tapia (2010).txt") #
+d <- readLines("Anderson (2008).txt") # no RMSEA
+e <- readLines("Arendasy (2007).txt") # no RMSEA
+f <- readLines("Arendasy (2012).txt") # no RMSEA
+g <- readLines("Atwater (2009).txt") # duplicate 596.8 
+h <- readLines("Bakker (2007).txt") # data, x 2 13 1/4 21:19, p 1/4 0:07, GFI 1/4 0:97, TLI 1/4 0:93, CFI 1/4 0:96, RMSEA 1/4 0:06;
+i <- readLines("Bakker (2008a).txt") # ok but cannot get N (table)
+j <- readLines("Bartomeus (2010).txt") # no result found
 k <- readLines("Bassi (2012).txt") # 9 ppl were removed from 184
-l <- readLines("Beckjord (2009).txt")
-m <- readLines("Belsky (2007).txt")
+l <- readLines("Beckjord (2009).txt") # no RMSEA
+m <- readLines("Belsky (2007).txt") # ok
 n <- readLines("Bowers (2007).txt")
 o <- readLines("Bradford (2008).txt")  # 2 = chi2
 p <- readLines("Beanje (2007).txt")

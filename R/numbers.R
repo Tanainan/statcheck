@@ -46,3 +46,14 @@ word2num <- function(word){
   }
   return(list(word,out))
 }
+
+
+
+# add a function to count decimal places for RMSEA
+decimalplaces <- function(x) {
+  if (abs(x - round(x)) > .Machine$double.eps^0.5) {
+    nchar(strsplit(sub('0+$', '', as.character(x)), ".", fixed = TRUE)[[1]][[2]])
+  } else {
+    return(0)
+  }
+}

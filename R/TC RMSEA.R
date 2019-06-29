@@ -113,7 +113,7 @@ checkRMSEA <-
       ngroup <- unlist(str_extract_all(ngroup, regex("\\d+|one|two|three|four|five|six|seven|eight|nine|\\sten\\s")))
       ngroup <- ngroup %>% str_replace_all(c("one" = "1", "two" = "2", "three" = "3", "four" = "4", "five" = "5", "six" = "6", "seven" = "7", "eight" = "8", "nine" = "9", "\\sten\\s" = "10")) %>% unlist()
       ngroup <- ngroup[!duplicated(ngroup)]
-      } else {ngroup <- 1}
+      } else {ngroup = NULL}
 
       
       # ++++++++++++++++++++++++++++++++++++
@@ -209,7 +209,7 @@ checkRMSEA <-
         num$N[i] <- unlist(word2num(word[i])[2]) %>% as.character() %>% as.numeric()
         num$N.Raw[i] <- unlist(word2num(word[i])[1])
       }
-      num <- num[!(as.numeric(num$N) < 10 | as.numeric(num$N) >= 1500),]
+      num <- num[!(as.numeric(num$N) < 10),]
       num <- num[!duplicated(num$N),]
       
       
