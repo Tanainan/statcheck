@@ -3,44 +3,61 @@ library(tidyverse)
 library(rio)
 setwd("~/Downloads/Pdfs/AMOS/Done")
 
-a <- readLines("Ahmad (2004).txt") # no result found
-b <- readLines("Ahmetoglu (2010).txt") #ok
-c <- readLines("Alonso-Tapia (2010).txt") #
-d <- readLines("Anderson (2008).txt") # no RMSEA
-e <- readLines("Arendasy (2007).txt") # no RMSEA
-f <- readLines("Arendasy (2012).txt") # no RMSEA
-g <- readLines("Atwater (2009).txt") # duplicate 596.8 
-h <- readLines("Bakker (2007).txt") # data, x 2 13 1/4 21:19, p 1/4 0:07, GFI 1/4 0:97, TLI 1/4 0:93, CFI 1/4 0:96, RMSEA 1/4 0:06;
-i <- readLines("Bakker (2008a).txt") # ok but cannot get N (table)
-j <- readLines("Bartomeus (2010).txt") # no result found
-k <- readLines("Bassi (2012).txt") # 9 ppl were removed from 184
-l <- readLines("Beckjord (2009).txt") # no RMSEA
-m <- readLines("Belsky (2007).txt") # ok
-n <- readLines("Bowers (2007).txt")
-o <- readLines("Bradford (2008).txt")  # 2 = chi2
-p <- readLines("Beanje (2007).txt")
-q <- readLines("Burt (2006).txt")
-r <- readLines("Burt (2009).txt")
-s <- readLines("Carmeli (2006).txt")
-t <- readLines("Carter (2006).txt")
-u <- readLines("Castro-Costa (2008).txt")
-v <- readLines("Cousins (2007).txt")
-w <- readLines("Curby (2008).txt")
-x <- readLines("Dabos (2013).txt")
-y <- readLines("de Marco (2006).txt")
-z <- readLines("de Marco (2009).txt")
+txt <- readLines("Ahmad (2004).txt") # no result found
+txt <- readLines("Ahmetoglu (2010).txt") # ok
+txt <- readLines("Alonso-Tapia (2010).txt") #
+txt <- readLines("Anderson (2008).txt") # no RMSEA
+txt <- readLines("Arendasy (2007).txt") # no RMSEA
+txt <- readLines("Arendasy (2012).txt") # no RMSEA
+txt <- readLines("Atwater (2009).txt") # duplicate 596.8 
+txt <- readLines("Bakker (2007).txt") # data, x 2 13 1/4 21:19, p 1/4 0:07, GFI 1/4 0:97, TLI 1/4 0:93, CFI 1/4 0:96, RMSEA 1/4 0:06;
+txt <- readLines("Bakker (2008a).txt") # ok but cannot get N (table)
+txt <- readLines("Bartomeus (2010).txt") # no result found
+txt <- readLines("Bassi (2012).txt") # 9 ppl were removed from 184
+txt <- readLines("Beckjord (2009).txt") # no RMSEA
+txt <- readLines("Belsky (2007).txt") # ok
+txt <- readLines("Bowers (2007).txt") # no result found
+txt <- readLines("Bradford (2008).txt")  # 2 = chi2
+txt <- readLines("Branje (2007).txt") # no result found
+txt <- readLines("Burt (2006).txt") # chi2 = 2, RMSEA too far apart
+txt <- readLines("Burt (2009).txt") # no result
+txt <- readLines("Carmeli (2006).txt") # ok
+txt <- readLines("Carter (2006).txt") # read = as "s"
+txt <- readLines("Castro-Costa (2008).txt") # get more results than supposed to
+txt <- readLines("Cousins (2007).txt") # cannot read "="
+txt <- readLines("Curby (2008).txt") # no result
+txt <- readLines("Dabos (2013).txt") # no result
+txt <- readLines("de Marco (2006).txt") # chi2 = "v"
+txt <- readLines("de Marco (2009).txt") # no result
 
 
 
+txt <- readLines("Dunn (2006).txt") # no "=", chi2 = 2
+txt <- readLines("Dunn (2012).txt") # ok
+txt <- readLines("Furnham (2009).txt") # no chi2 symbol
+txt <- readLines("Gano-Overway (2009).txt") # "=" is "s" ?????
+txt <- readLines("Gaylord-Harden (2007).txt") # no chi2 symbol
+txt <- readLines("Gheldof (2006).txt") # no result
+txt <- readLines("Gheldof (2010).txt") # ok
+txt <- readLines("Gill (2013).txt") # result too far apart
+txt <- readLines("Gluszek (2011).txt") # ok! 
+txt <- readLines("Gutieerrez (2006).txt") # ok
+txt <- readLines("Halperin (2011).txt") # ok
+txt <- readLines("Hoglund (2007).txt") # ok!
+txt <- readLines("Jasuja (2008).txt") # doesn't read a line about df
+txt <- readLines("Kark (2009).txt") # ok!
+txt <- readLines("Kim (2009).txt")  # ok!
+txt <- readLines("Kim (2010).txt") # ok but also extract Dv2
+txt <- readLines("Kong (2012).txt") # 
+txt <- readLines("Lachman (2006).txt") # ok
+txt <- readLines("Lee (2007).txt") # ok!
+txt <- readLines("Lee (2013).txt") # no result found
+txt <- readLines("Loyens (2007).txt") # RMSEA too far from Chi2 + table result
+txt <- readLines("Mandara (2009).txt") # ok!
+txt <- readLines("Molero (2011).txt") # result table
+txt <- readLines("Monsen (2009).txt") # result table
+txt <- readLines("Ngo-Metzger (2008).txt") # ok
 
-b <- readLines("Mandara (2009).txt")
-c <- readLines("Rapee (2005).txt")
-d <- readLines("Roest (2010).txt")
-m <- readLines("Sani (2008).txt")
-o <- readLines("van der Heijden (2009).txt")
-p <- readLines("Lee (2007).txt")
-q <- readLines("Loyens (2007).txt") # RMSEA before chi2
-r <- readLines("Zhao (2013).txt")
 
 
 
