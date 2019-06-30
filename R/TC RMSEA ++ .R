@@ -2,8 +2,8 @@ library(plyr)
 library(dplyr)
 library(stringr)
 
-source("~/Downloads/StatCheck/StatCheck/R/getPDF.R")
-source("~/Downloads/StatCheck/StatCheck/R/numbers.R")
+source("~/Downloads/StatCheck/StatCheck/R/TC getPDF.R")
+source("~/Downloads/StatCheck/StatCheck/R/TC numbers.R")
 
 checkRMSEA <-
   function(x) {{
