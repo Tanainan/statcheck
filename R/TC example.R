@@ -48,7 +48,7 @@ txt <- readLines("Jasuja (2008).txt") # doesn't read a line about df
 txt <- readLines("Johnson (2008).txt") # ok?
 txt <- readLines("Kark (2009).txt") # ok!
 txt <- readLines("Kim (2009).txt")  # ok!
-txt <- readLines("Kim (2010).txt") # ok but also extract Dv2
+txt <- readLines("Kim (2010).txt") # ok 
 txt <- readLines("Kong (2012).txt") # 
 txt <- readLines("Lachman (2006).txt") # ok
 txt <- readLines("Lee (2007).txt") # ok!

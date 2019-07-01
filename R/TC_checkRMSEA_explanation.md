@@ -770,3 +770,18 @@ checkPDF <-
     return(checkRMSEA(txts, ...))
   }
 ```
+
+When this code does not work:
+
+-   When the results are in a table
+-   When a number of participants change but the final sample size is not reported (e.g., "9 participants were removed from...") (Bassi (2012))
+-   When it's a multi-group. Sometimes it doesn't say how many groups in number or written word (e.g., gender) and we don't know exactly which model is computed with multi-group.
+-   The text itself, such as
+    -   x 2 13 1/4 21:19 (Bakker (2007))
+    -   v instead of v2 (de Marco (2006))
+    -   Having no "=" at all (Dunn (2006))
+    -   Having no chi2 notation at all (Furnham (2009))
+    -   skip a sentence in PDF completely (Jasuja (2008).txt)
+    -   chi2 and RMSEA are too far from each other (Gill (2013))
+    -   Many models are reported too close to each other (e.g., RMSEA = .04 ... chi2 = 353 ... RMSEA = .06) (Castro-Costa (2008))
+    -   read "=" as "s" (Carter (2006))
