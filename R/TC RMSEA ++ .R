@@ -6,7 +6,7 @@ source("~/Downloads/StatCheck/StatCheck/R/TC getPDF.R")
 source("~/Downloads/StatCheck/StatCheck/R/TC numbers.R")
 
 checkRMSEA <-
-  function(x) {{
+  function(x) {#{
     
     # Create empty data frame for main result:
     Res <-
@@ -82,7 +82,9 @@ checkRMSEA <-
       Csign <- str_extract(unlist(Crrr), regex("[=<>]|less than|greater than|equals to|equal to|\\s\\s"))
       Csign <- unlist(Csign[!is.na(Csign)])
       Csign <- Csign %>% str_replace_all(c("less than" = "<", "greater than" = ">", "(equals|equal) to" = "=", "  " = "=")) %>% unlist()
-          
+      if (length(Csign) == 0 & length(CRMSEA) != 0){
+        Csign <- rep("=", length(CRMSEA))
+      }    
       
       
       # Get N from when it is reported in the result
@@ -143,6 +145,9 @@ checkRMSEA <-
       Rsign <- str_extract(unlist(Rrrr), regex("[=<>]|less than|greater than|equals to|equal to|\\s\\s"))
       Rsign <- unlist(Rsign[!is.na(Rsign)])
       Rsign <- Rsign %>% str_replace_all(c("less than" = "<", "greater than" = ">", "(equals|equal) to" = "=", "  " = "=")) %>% unlist()
+      if (length(Rsign) == 0 & length(RRMSEA) != 0){
+        Rsign <- rep("=", length(RRMSEA))
+      }    
       
       # Get N from when it is reported in the result
       Rnnn <- str_extract_all(unlist(RC), regex("(\\Wn\\s?(\\=|equals to|equal to|equal|equals)?\\s?\\d+)", ignore_case = T))
@@ -370,11 +375,10 @@ checkRMSEA <-
 
       chi2RMSEA <- chi2RMSEA[,c("Source",
                                 "Chi2","df","N","Multi.group","rmsea","RMSEA","MG.rmsea","MG.RMSEA","Sign","Reported.RMSEA","ConsistencyRMSEA","ConsistencyMG.RMSEA","Chi2.Raw","N.Raw","Total.Ns","Total.Models")]
-      } 
-      # "}" for length(Chi2) != length(N)
+      } # "}" for length(Chi2) != length(N)
               
             }}} else {if (length(Chi2) != length(df)| length(RMSEA) != length(Chi2)) {chi2RMSEA <- cat("\nResults found but incomplete\n")}}} else {chi2RMSEA <- cat("\ncheckRMSEA did not find any results\n")}
-      }    
+      #}    
         
           # Append, clean and close:
           # Res <- rbind(Res, chi2RMSEA)
