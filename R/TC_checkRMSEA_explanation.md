@@ -32,13 +32,13 @@ Then I changed the function to be able to get Chi2, df, RMSEA, N, etc. from the 
 
 \*\*\* Note that string extraction is not case sensitive
 
-1.  Fix bugs that occurs when turing a PDF file into a text file. Here, this line of code can fix when the text file shows "1/4", instead of "=". I also change all the square brackets to parentheses to make it easier when extracting the string.
+1)) Fix bugs that occurs when turing a PDF file into a text file. Here, this line of code can fix when the text file shows "1/4", instead of "=". I also change all the square brackets to parentheses to make it easier when extracting the string.
 
 ``` r
       txt <- unlist(str_replace_all(txt, c("1/4" = "=", "  " = " ", "\\[" = "(", "\\]" = ")"))) 
 ```
 
-1.  Extract paragraphs that contain "RMSEA", "root mean square error of approximation", "root-mean-square error of approximation" + 20 characters (maximum) after the keyword + RMSEA value. This would indicate that the program will extract the actual results, rather than when a paragraph in the article only introduces model fit criteria.
+2)) Extract paragraphs that contain "RMSEA", "root mean square error of approximation", "root-mean-square error of approximation" + 20 characters (maximum) after the keyword + RMSEA value. This would indicate that the program will extract the actual results, rather than when a paragraph in the article only introduces model fit criteria.
 
 The RMSEA values that can be extracted with this code are ".05" or ":05". The numbers of decimal places can be anything.
 
@@ -47,7 +47,7 @@ The RMSEA values that can be extracted with this code are ".05" or ":05". The nu
       Loc <- str_subset(txt, regex("(((root mean square error of approximation|root-mean-square error of approximation|\\(?RMSEA\\)?)(.){0,20}((\\.|\\:)\\d+)))", ignore_case = T))
 ```
 
-1.  Sometimes, the text read the "=" as 5. For example, in Hoglund (2007).txt, the text would be RMSEA 5 .043, instead of RMSEA = .43. In Jasuja (2008).txt, it would be RMSEA5.043.
+3)) Sometimes, the text read the "=" as 5. For example, in Hoglund (2007).txt, the text would be RMSEA 5 .043, instead of RMSEA = .43. In Jasuja (2008).txt, it would be RMSEA5.043.
 
 How the code work is that it looks for the string that contains either:
 
@@ -68,9 +68,7 @@ We need to change it because, later, we need to extract a number from the string
 
 In some cases, RMSEA result is reported/mentioned BEFORE chi2 value. I structured the code to look for when chi2 is reported BEFORE RMSEA first. If the amounts of chi2 and RMSEA extracted match, then it won't look for when RMSEA is before chi2. However, this might not be efficient when the amounts of chi2 and RMSEA match, and there is also RMSEA reported before chi2.
 
-1.  Extract chi2 and RMSEA results as a whole sentence from Loc. Possible notations of chi2 that this code can get are:
-
-<!-- -->
+4)) Extract chi2 and RMSEA results as a whole sentence from Loc. Possible notations of chi2 that this code can get are:
 
 1.  chi square
 2.  chi-square of
@@ -104,7 +102,7 @@ E.g., "w2 (df = 24, N = 337) = 38.97, po.05; CFI = .968; RMSEA = .043."
                                                     ignore_case = TRUE))
 ```
 
-1.  Make a sentence about chi2 shorter to make it easier to get the value.
+5)) Make a sentence about chi2 shorter to make it easier to get the value.
 
 E.g., "w2 (df = 24, N = 337) = 38.97"
 
@@ -114,13 +112,13 @@ CR1 <-
                                                 ignore_case = TRUE))
 ```
 
-1.  Change all the chi2 difference extracted to NA by replacing the string with an empty string
+6)) Change all the chi2 difference extracted to NA by replacing the string with an empty string
 
 ``` r
       CR1 <- str_replace_all(unlist(CR1), "^[AD].*", "") 
 ```
 
-1.  Change "v2 = 1:34" to "v2 = 1.34"; remove irrelevant info to make it easier to get the right chi2 value. E.g., "w2 (df = 24, N = 337) = 38.97" -&gt; the program might mistakenly read 24 or 337 as chi2 values. We remove every thing in the parentheses, including "v2" -&gt; We then get " = 38.97".
+7)) Change "v2 = 1:34" to "v2 = 1.34"; remove irrelevant info to make it easier to get the right chi2 value. E.g., "w2 (df = 24, N = 337) = 38.97" -&gt; the program might mistakenly read 24 or 337 as chi2 values. We remove every thing in the parentheses, including "v2" -&gt; We then get " = 38.97".
 
 This only works when there is df, n, and/or p-value in parentheses between a chi2 notation and a chi2 value.
 
@@ -128,7 +126,7 @@ This only works when there is df, n, and/or p-value in parentheses between a chi
       CR2 <- str_replace_all(unlist(CR1), c("\\:" = "\\.", "\\((.){1,20}\\)" = "", "[vcwx]2|(\\:|\\(|\\d|\\,)\\s2\\s" = ""))
 ```
 
-1.  Get the chi2 value
+8)) Get the chi2 value
 
 We prevent the program to collect the chi2 notation of "2" and only get the actual chi2 value. The value can have any numbers of decimal places (e.g., 3.444), only have the decimal places (e.g., .56), or no decimal places (e.g., 456).
 
@@ -136,7 +134,7 @@ We prevent the program to collect the chi2 notation of "2" and only get the actu
       CChi2 <- unlist(str_extract(unlist(CR2), regex("(?!(2\\s))((\\d*\\.\\d+)|\\d+)")))
 ```
 
-1.  Create a data frame that contains a column of chi2 values and a column of original text of chi2. I remove a row for chi2 difference (NA from Step 6).
+9)) Create a data frame that contains a column of chi2 values and a column of original text of chi2. I remove a row for chi2 difference (NA from Step 6).
 
 I have to create a data frame because I need to match the original text with the right chi2 value when a listwise deletion is needed for the chi2 difference.
 
@@ -145,7 +143,7 @@ I have to create a data frame because I need to match the original text with the
       C <- na.omit(C)
 ```
 
-1.  Extract df from the sentence of chi2 report. This code can extract df in notations of:
+10)) Extract df from the sentence of chi2 report. This code can extract df in notations of:
 
 Starting with "(" (e.g., "v2(df = 24, n = 164)"), or a space (e.g., "v2 = 34, df = 45") 1) df 2) d.f. 3) d 4) degrees of freedom
 
@@ -169,21 +167,21 @@ Cddd <- str_extract_all(unlist(CR), regex("((\\(|\\s)\\(?(df|d|d.f.)\\s?[<>=]?|(
       Cddd <- Cddd[!is.na(Cddd)] # remove NAs
 ```
 
-1.  Extract the df value. This code won't collect "2" from the chi2 notation. E.g., "2(32) = ..." -&gt; only collect "32"
+11)) Extract the df value. This code won't collect "2" from the chi2 notation. E.g., "2(32) = ..." -&gt; only collect "32"
 
 ``` r
       Cdf <- str_extract_all(unlist(Cddd), regex("(?!2\\s?\\()\\d+"))
       Cdf <- unlist(Cdf[!is.na(Cdf)]) # remove NAs
 ```
 
-1.  Get RMSEA from the text.
+12)) Get RMSEA from the text.
 
 ``` r
       Crrr <- str_extract_all(unlist(CR), regex("((root mean square error of approximation|root-mean-square error of approximation|RMSEA)(.){0,10}\\s(0?(\\.|\\:)\\d+))", ignore_case = T))
       Crrr <- Crrr[!is.na(Crrr)]
 ```
 
-1.  Replace ":" with "." and " , " with "&lt;" -&gt; I found this bug from one of the text files but do not know if it's always the case that "&lt;" will be read as " , " (note that there are space around the comman).
+13)) Replace ":" with "." and " , " with "&lt;" -&gt; I found this bug from one of the text files but do not know if it's always the case that "&lt;" will be read as " , " (note that there are space around the comman).
 
 Then extract the RMSEA value. This value is less than 1 always.
 
@@ -194,7 +192,7 @@ Then extract the RMSEA value. This value is less than 1 always.
       CRMSEA <- unlist(CRMSEA[!is.na(CRMSEA)])
 ```
 
-1.  In case that the number of RMSEA extracted and the number of chi2 get are not the same (due to having a longer report and RMSEA value is too far apart from the RMSEA keyword), we try to collect the RMSEA again with more characters allowed in the string.
+14)) In case that the number of RMSEA extracted and the number of chi2 get are not the same (due to having a longer report and RMSEA value is too far apart from the RMSEA keyword), we try to collect the RMSEA again with more characters allowed in the string.
 
 ``` r
 if (length(CRMSEA) != length(CChi2)){
@@ -206,7 +204,7 @@ if (length(CRMSEA) != length(CChi2)){
       }
 ```
 
-1.  Collect RMSEA directional sign "&lt;", "&gt;", "=". If it is written in word, I replace it with a symbol.
+15)) Collect RMSEA directional sign "&lt;", "&gt;", "=". If it is written in word, I replace it with a symbol.
 
 ``` r
  Csign <- str_extract(unlist(Crrr), regex("[=<>]|less than|greater than|equals to|equal to|\\s\\s"))
@@ -214,7 +212,7 @@ if (length(CRMSEA) != length(CChi2)){
       Csign <- Csign %>% str_replace_all(c("less than" = "<", "greater than" = ">", "(equals|equal) to" = "=", "  " = "=")) %>% unlist()
 ```
 
-1.  Occasionally, there's no sign. E.g., "root mean.... approximation (.56)". I test if the number of RMSEA values found is the same as the number of chi2 values found. If yes, then assume that it an "=" E.g., "= .56"
+16)) Occasionally, there's no sign. E.g., "root mean.... approximation (.56)". I test if the number of RMSEA values found is the same as the number of chi2 values found. If yes, then assume that it an "=" E.g., "= .56"
 
 ``` r
 if (length(Csign) == 0 & length(CRMSEA) != 0){
@@ -222,7 +220,7 @@ if (length(Csign) == 0 & length(CRMSEA) != 0){
       }   
 ```
 
-1.  Try to get N from the reported sentence. E.g., "w2 (df = 24, N = 337) = 38.97". This code will look for a string that has non-alphabet + n + space (optional) + equal + space (optional) + a number.
+17)) Try to get N from the reported sentence. E.g., "w2 (df = 24, N = 337) = 38.97". This code will look for a string that has non-alphabet + n + space (optional) + equal + space (optional) + a number.
 
 The \\W is non-alphabet E.g., "(n equals 23)", ":n = 32", ", N=44"
 
@@ -233,7 +231,7 @@ Cnnn <- str_extract_all(unlist(CR), regex("(\\Wn\\s?(\\=|equals to|equal to|equa
       CN <- unlist(CN[!is.na(CN)])
 ```
 
-1.  Change everything to a vector
+18)) Change everything to a vector
 
 ``` r
       Chi2 <- list(as.vector(C$Chi2)) %>% unlist 
@@ -245,7 +243,7 @@ Cnnn <- str_extract_all(unlist(CR), regex("(\\Wn\\s?(\\=|equals to|equal to|equa
       nnn <- list(Cnnn) %>% unlist
 ```
 
-1.  In case that the amount of chi2 values is not the same as the amount of RMSEA values, try to search for when RMSEA is reported BEFORE the chi2. All steps are the same as above.
+19)) In case that the amount of chi2 values is not the same as the amount of RMSEA values, try to search for when RMSEA is reported BEFORE the chi2. All steps are the same as above.
 
 ``` r
 if (length(Chi2) != length(RMSEA)){
@@ -311,7 +309,7 @@ if (length(Chi2) != length(RMSEA)){
       }
 ```
 
-1.  Check if there's any multi-group keyword mentioned in the article. If yes, search for any possible numbers of the group by looknig for a word "groups" first, and then get the numbers written in words around that are close to the word "groups" (e.g., about 15 characters before and after the keyword). Here, I assume that there shouldn't be more than 10 groups. This method is still not sufficient, especially when they don't mention the number of the group in the text at all (e.g., gender).
+20)) Check if there's any multi-group keyword mentioned in the article. If yes, search for any possible numbers of the group by looknig for a word "groups" first, and then get the numbers written in words around that are close to the word "groups" (e.g., about 15 characters before and after the keyword). Here, I assume that there shouldn't be more than 10 groups. This method is still not sufficient, especially when they don't mention the number of the group in the text at all (e.g., gender).
 
 ``` r
       multi <- unlist(str_detect(txt, regex("multigroup|multi-group|multiple (groups|group)|multi-sample|multiple (samples|sample)|multisample", ignore_case = T)))
@@ -325,7 +323,7 @@ if (length(which(multi == TRUE)) >= 1){
       ngroup <- ngroup[!(as.numeric(ngroup) > 10)]
 ```
 
-1.  RMSEA computation & comparison.
+21)) RMSEA computation & comparison.
 
 If chi2 value is found at least one, if a number of chi2 = df = RMSEA = comparison sign of RMSEA, then we can compute the RMSEA.
 
@@ -338,7 +336,7 @@ chi2RMSEA <- NULL
       # ++++++++++++++++++++++++++++++++++++
 ```
 
-1.  The coputation requires a value of N which is not always mentioned in the result. I create 2 cases: a case when a number of chi2 found = a number of N found (e.g., "w2 (df = 24, N = 337) = 38.97"), and a case when they are not equal.
+22)) The coputation requires a value of N which is not always mentioned in the result. I create 2 cases: a case when a number of chi2 found = a number of N found (e.g., "w2 (df = 24, N = 337) = 38.97"), and a case when they are not equal.
 
 This is the first case.
 
@@ -346,7 +344,7 @@ This is the first case.
 if (length(N) == length(Chi2)){
 ```
 
-22.1. If the number of groups from the multi-group keyword is found, I create a data frame with a number of row of a number of chi2 values \* a number of a number of groups. For example, if ngroup = c(4, 5), then we repeat rows of chi2, df, RMSEA, etc. twice in the data frame. This is for the computation which requires a number of groups.
+22.1)) If the number of groups from the multi-group keyword is found, I create a data frame with a number of row of a number of chi2 values \* a number of a number of groups. For example, if ngroup = c(4, 5), then we repeat rows of chi2, df, RMSEA, etc. twice in the data frame. This is for the computation which requires a number of groups.
 
 ``` r
 if (length(ngroup) != 0){
@@ -354,7 +352,7 @@ if (length(ngroup) != 0){
       }
 ```
 
-22.2. If ngroup = 0, then the data frame has \# rows = \# chi2.
+22.2)) If ngroup = 0, then the data frame has \# rows = \# chi2.
 
 ``` r
 if (length(ngroup) == 0){
@@ -362,7 +360,7 @@ if (length(ngroup) == 0){
       }
 ```
 
-22.3. Make chi2, df, N, reported.RMSEA numeric for the computation.
+22.3)) Make chi2, df, N, reported.RMSEA numeric for the computation.
 
 ``` r
       chi2RMSEA$Chi2 <- chi2RMSEA$Chi2 %>% as.character() %>% as.numeric()
@@ -371,7 +369,7 @@ if (length(ngroup) == 0){
       chi2RMSEA$Reported.RMSEA <- chi2RMSEA$Reported.RMSEA %>% as.character() %>% as.numeric()
 ```
 
-22.4. Add a column of whether there's multi-group word mentioned in the article or not. If there is, then fill that column with \# groups and make it numeric. Otherwise print "-".
+22.4)) Add a column of whether there's multi-group word mentioned in the article or not. If there is, then fill that column with \# groups and make it numeric. Otherwise print "-".
 
 ``` r
  if (length(ngroup) != 0){
@@ -379,7 +377,7 @@ if (length(ngroup) == 0){
       } else {chi2RMSEA$Multi.group <- "-"}
 ```
 
-22.5. Create new columns for the results of computation, including how many model results and Ns can we get from the text.
+22.5)) Create new columns for the results of computation, including how many model results and Ns can we get from the text.
 
 ``` r
       chi2RMSEA$rmsea <- NA
@@ -396,7 +394,7 @@ if (length(ngroup) == 0){
       chi2RMSEA$Sign = sign
 ```
 
-22.6. Compute RMSEA with a for loop.
+22.6)) Compute RMSEA with a for loop.
 
 The first part is to read how many decimal places of RMSEA were reported in the article. We need this info later when comparing for consistency of reported and computed RMSEAs.
 
@@ -424,7 +422,7 @@ for (j in 1:nrow(chi2RMSEA)){
       }
 ```
 
-22.7. Test for consistency between reported and computed RMSEAs (and multi-group RMSEAs). I also refer to the comparison sign extracted from RMSEA in Step 15 and 16.
+22.7)) Test for consistency between reported and computed RMSEAs (and multi-group RMSEAs). I also refer to the comparison sign extracted from RMSEA in Step 15 and 16.
 
 ``` r
 chi2RMSEA$ConsistencyRMSEA <- NA # test if the reported and computed RMSEAs are the same (same amount of digits as reported)
@@ -442,7 +440,7 @@ chi2RMSEA$ConsistencyRMSEA <- NA # test if the reported and computed RMSEAs are 
       }
 ```
 
-22.8. Create a column for article title and re-order the data frame.
+22.8)) Create a column for article title and re-order the data frame.
 
 ``` r
 chi2RMSEA$Source = names(x)[i]
@@ -452,7 +450,7 @@ chi2RMSEA$Source = names(x)[i]
       }
 ```
 
-1.  The second case: when \# chi2 values is not the same as \# of N values retrives.
+23)) The second case: when \# chi2 values is not the same as \# of N values retrives.
 
 ``` r
 if (length(N) != length(Chi2)){ # if Ns were not given in the result
@@ -460,7 +458,7 @@ if (length(N) != length(Chi2)){ # if Ns were not given in the result
       N <- NA
 ```
 
-23.1. Get the Ns from numbers written in words from the article.
+23.1)) Get the Ns from numbers written in words from the article.
 
 This code can extract up to 3 digits word. The patterns are:
 
@@ -489,7 +487,7 @@ Some articles have more than 1,000 participants. I believe that if that's the ca
       word <- word %>% str_replace_all(c("(a|the) hundred" = "hundred", " and " = " ", "-" = " ", "ten\\s" = "ten"))
 ```
 
-23.2. Convert written words into numbers. I remove the duplicate and assume that sample size must be greater than 10.
+23.2)) Convert written words into numbers. I remove the duplicate and assume that sample size must be greater than 10.
 
 The written word itself will be recorded as N.Raw.
 
@@ -505,7 +503,7 @@ The written word itself will be recorded as N.Raw.
       num <- num[!duplicated(num$N),]
 ```
 
-23.3. Another way to get Ns is by searching for any numbers in the article.
+23.3)) Another way to get Ns is by searching for any numbers in the article.
 
 First, numbers are extracted from a string that says "n=..."; "n equals to ...", or any numbers that are between words (e.g., "include 549 teachers"), or after a word and a comma (e.g., "in total, 16 were graduate students".
 
@@ -524,7 +522,7 @@ The string itself will be recorded as N.Raw.
       N <- unlist(N[!is.na(N)])
 ```
 
-23.4. Combine Ns and N.Raw
+23.4)) Combine Ns and N.Raw
 
 ``` r
 # Get N.Raws from written text and numbers
@@ -535,7 +533,7 @@ The string itself will be recorded as N.Raw.
       N <- unlist(str_replace_all(unlist(N), "\\,", ""))
 ```
 
-23.5. Create a data frame, accounting for \# of Ns and \# of ngroup.
+23.5)) Create a data frame, accounting for \# of Ns and \# of ngroup.
 
 If multi-group is found in the article:
 
@@ -572,7 +570,7 @@ If multi-group is not found in the article: The total row is \# of chi \* \# of 
       }
 ```
 
-23.6. Add columns about total Ns found and total models found in the article.
+23.6)) Add columns about total Ns found and total models found in the article.
 
 ``` r
 #Number of Ns found in the article
@@ -584,7 +582,7 @@ If multi-group is not found in the article: The total row is \# of chi \* \# of 
       chi2RMSEA$Total.Models <- length(unlist(Chi2.Raw))
 ```
 
-23.7. The rest is the same as Step 22.3-22.8
+23.7)) The rest is the same as Step 22.3-22.8
 
 ``` r
 chi2RMSEA$Chi2 <- chi2RMSEA$Chi2 %>% as.character() %>% as.numeric()
@@ -648,7 +646,7 @@ If results are found but something is wrong with the code, it would print "Resul
             }}} else {if (length(Chi2) != length(df)| length(RMSEA) != length(Chi2)) {chi2RMSEA <- cat("\nResults found but incomplete\n")}}} else {chi2RMSEA <- cat("\ncheckRMSEA did not find any results\n")}
 ```
 
-1.  The rest of the function is similar to statcheck, but different names.
+25)) The rest of the function is similar to statcheck, but different names.
 
 ``` r
       #}    
