@@ -14,6 +14,8 @@ getPDF <- function(x) #location of PDF
   }
   return(txtfiles)
 }
+
+
 ## Function to check directory of PDFs:
 checkPDFdir <- # entire directory
   function(dir,
