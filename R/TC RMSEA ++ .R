@@ -39,7 +39,7 @@ checkRMSEA <-
 
       # If Chi2 is reported before RMSEA ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
       CR <-
-        str_extract_all(unlist(Loc), regex("((chi-square (?!difference)|chisquare|chi-square of|A?D?[vcwx]2\\s?(=|\\(|of)|(\\:|\\(|\\d|\\,)\\s?2\\s?(\\(|\\=))(.){0,40}((\\d*(\\.|\\:)\\d+)|\\d+)(.){0,300}(root mean square error of approximation|root-mean-square error of approximation|RMSEA)\\s(.){0,40}\\s(\\d*(\\.|\\:)?\\d*))",
+        str_extract_all(unlist(Loc), regex("((chi-square (?!difference)|chisquare|chi-square of|A?D?[vcwx]2\\s?(=|\\(|of)|(\\:|\\(|\\d|\\,)\\s?2\\s?(\\(|\\=))(.){0,40}((\\d*(\\.|\\:)\\d+)|\\d+)(.){0,300}(root mean square error of approximation|root-mean-square error of approximation|RMSEA)\\s(.){0,40}\\s(0?(\\.|\\:)\\d+))",
                                                     ignore_case = TRUE))
       
       # Remove all space?
@@ -64,14 +64,14 @@ checkRMSEA <-
       
      
       # Get RMSEA
-      Crrr <- str_extract_all(unlist(CR), regex("((root mean square error of approximation|root-mean-square error of approximation|RMSEA)(.){0,10}\\s(\\d*(\\.|\\:)?\\d*))", ignore_case = T))
+      Crrr <- str_extract_all(unlist(CR), regex("((root mean square error of approximation|root-mean-square error of approximation|RMSEA)(.){0,10}\\s(0?(\\.|\\:)\\d+))", ignore_case = T))
       Crrr <- Crrr[!is.na(Crrr)]
       Crrr <- unlist(str_replace_all(unlist(Crrr), c(":" = ".", " , " = " < ")))
       CRMSEA <- unlist(str_extract_all(unlist(Crrr), regex("\\.\\d+")))
       CRMSEA <- unlist(CRMSEA[!is.na(CRMSEA)])
       
       if (length(CRMSEA) != length(CChi2)){
-        Crrr <- str_extract_all(unlist(CR), regex("((root mean square error of approximation|root-mean-square error of approximation|RMSEA)(.){0,20}\\s(\\d*(\\.|\\:)?\\d*))", ignore_case = T))
+        Crrr <- str_extract_all(unlist(CR), regex("((root mean square error of approximation|root-mean-square error of approximation|RMSEA)(.){0,20}\\s(0?(\\.|\\:)\\d+))", ignore_case = T))
         Crrr <- Crrr[!is.na(Crrr)]
         Crrr <- unlist(str_replace_all(unlist(Crrr), c(":" = ".", " , " = " < ")))
         CRMSEA <- unlist(str_extract(unlist(Crrr), regex("\\.\\d+")))
@@ -106,7 +106,7 @@ checkRMSEA <-
       # Try if RMSEA is reported before Chi2 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
      
       if (length(Chi2) != length(RMSEA)){
-      RC <- unlist(str_extract_all(unlist(Loc), regex("((root mean square error of approximation|root-mean-square error of approximation|RMSEA)(.){0,20}((\\.|\\:)\\d+)(.){0,80}(chi-square (?!difference)|chiquare|chi-square of|A?D?[vcw]2\\s?\\=?\\s?\\(|(\\:|\\(|\\d|\\,)\\s?2\\s?(\\(|\\=))(.){0,40}((\\d*(\\.|\\:)\\d+)|\\d+))(.){0,30}", ignore_case = T)))
+      RC <- unlist(str_extract_all(unlist(Loc), regex("((root mean square error of approximation|root-mean-square error of approximation|RMSEA)(.){0,20}(0?(\\.|\\:)\\d+)(.){0,80}(chi-square (?!difference)|chiquare|chi-square of|A?D?[vcw]2\\s?\\=?\\s?\\(|(\\:|\\(|\\d|\\,)\\s?2\\s?(\\(|\\=))(.){0,40}((\\d*(\\.|\\:)\\d+)|\\d+))(.){0,30}", ignore_case = T)))
       
 
       # Get Chi2
@@ -127,14 +127,14 @@ checkRMSEA <-
       
     
       # Get RMSEA
-      Rrrr <- str_extract_all(unlist(RC), regex("((root mean square error of approximation|root-mean-square error of approximation|RMSEA)(.){0,10}\\s(\\d*(\\.|\\:)?\\d*))", ignore_case = T))
+      Rrrr <- str_extract_all(unlist(RC), regex("((root mean square error of approximation|root-mean-square error of approximation|RMSEA)(.){0,10}\\s(0?(\\.|\\:)\\d+))", ignore_case = T))
       Rrrr <- Rrrr[!is.na(Rrrr)]
       Rrrr <- unlist(str_replace_all(unlist(Rrrr), c(":" = ".", " , " = " < ")))
       RRMSEA <- unlist(str_extract_all(unlist(Rrrr), regex("\\.\\d+")))
       RRMSEA <- unlist(RRMSEA[!is.na(RRMSEA)])
       
       if (length(RRMSEA) != length(RChi2)){
-        Rrrr <- str_extract_all(unlist(RC), regex("((root mean square error of approximation|root-mean-square error of approximation|RMSEA)(.){0,20}\\s(\\d*(\\.|\\:)?\\d*))", ignore_case = T))
+        Rrrr <- str_extract_all(unlist(RC), regex("((root mean square error of approximation|root-mean-square error of approximation|RMSEA)(.){0,20}\\s(0?(\\.|\\:)\\d+))", ignore_case = T))
         Rrrr <- Rrrr[!is.na(Rrrr)]
         Rrrr <- unlist(str_replace_all(unlist(Rrrr), c(":" = ".", " , " = " < ")))
         RRMSEA <- unlist(str_extract(unlist(Rrrr), regex("\\.\\d+")))
@@ -263,9 +263,9 @@ checkRMSEA <-
       N <- NA
       
       # Get Ns from written text numbers
-      word <- (unlist(str_extract_all(txt, regex("(((the|a|one|two|three|four|five|six|seven|eight|nine)?\\s)?hundred\\s(and\\s)?)?((thirteen|fourteen|fifteen|sixteen|seventeen|eighteen|nineteen|ten|eleven|twelve)|(((twenty|thirty|forty|fifty|sixty|seventy|eighty|ninety)(\\-?))?(one|two|three|four|five|six|seven|eight|nine)?))?", ignore_case = T))))
+      word <- (unlist(str_extract_all(txt, regex("(((the|a|one|two|three|four|five|six|seven|eight|nine)?\\s)?hundred\\s(and\\s(ten\\W)?)?)?((thirteen|fourteen|fifteen|sixteen|seventeen|eighteen|nineteen|eleven|twelve)|(((twenty|thirty|forty|fifty|sixty|seventy|eighty|ninety)(\\-?))?(one|two|three|four|five|six|seven|eight|nine)?))?|\\Wten\\W", ignore_case = T))))
       word <- unlist(lapply(word, function(x) x[nchar(x) >= 1]))
-      word <- word %>% str_replace_all(c("(?!\\w+)\\s?ten\\s?" = "ten", "(a|the) hundred" = "hundred", " and " = " ", "-" = " "))
+      word <- word %>% str_replace_all(c("(a|the) hundred" = "hundred", " and " = " ", "-" = " ", "ten\\s" = "ten"))
 
       
       num <- data.frame(N = rep(NA, length(word)), N.Raw = rep(NA, length(word)))
@@ -278,7 +278,7 @@ checkRMSEA <-
       
       
       # Get location of sample size (from all the integers in the article)
-      N.Raw <- str_extract_all(txt, regex("(n\\s?(\\=|equals to|equal to|equal|equals)\\s?(\\d+\\,)?\\d{2,3}\\,?\\s)|((?!\\d+)\\w+\\,?\\s(?!0)(\\d+\\,)?\\d{2,3}\\s(?!\\d+)(?!(degrees|Jan|Feb|March|April|May|June|July|Augu|Sep|Oct|Nov|Dec))\\w+)", ignore_case = T)) # search for numbers and get the location in the article
+      N.Raw <- str_extract_all(txt, regex("(n\\s?(\\=|equals to|equal to|equal|equals)\\s?(\\d+\\,)?\\d{2,3}\\,?\\s)|((?!\\d+)\\w+\\,?\\s(?!0)(\\d+\\,)?\\d{2,3}\\s(?!\\d+)(?!degrees)\\w+)", ignore_case = T)) # search for numbers and get the location in the article
       N.Raw <- unlist(N.Raw[!is.na(N.Raw)])
       N.Raw <- unlist(N.Raw[!duplicated(N.Raw)])
 
@@ -286,7 +286,7 @@ checkRMSEA <-
       N <- unlist(str_extract_all(unlist(N.Raw), regex("(\\d+\\,)?\\d+")))
       N <- unlist(N[!is.na(N)])
       
-      # Get N.Raws from written text numbers
+      # Get N.Raws from written text and numbers
       N.Raw <- list(N.Raw,num$N.Raw) %>% unlist 
       
       # Combine text and numbers
