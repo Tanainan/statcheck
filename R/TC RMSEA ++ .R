@@ -200,6 +200,7 @@ checkRMSEA <-
       chi2RMSEA$df <- chi2RMSEA$df %>% as.character() %>% as.numeric()
       chi2RMSEA$N <- chi2RMSEA$N %>% as.character() %>% as.numeric()
       chi2RMSEA$Reported.RMSEA <- chi2RMSEA$Reported.RMSEA %>% as.character() %>% as.numeric()
+      
       if (length(ngroup) != 0){
       chi2RMSEA$Multi.group <- chi2RMSEA$Multi.group %>% as.character() %>% as.numeric()
       } else {chi2RMSEA$Multi.group <- "-"}
