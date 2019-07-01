@@ -2,7 +2,7 @@ checkRMSEA explanation
 ================
 Tanainan Chuanchaiyakul
 
-Retrieve the actual code at: <https://github.com/Tanainan/statcheck/blob/master/R/TC%20RMSEA%20%2B%2B%20.R>
+The actual code file: <https://github.com/Tanainan/statcheck/blob/master/R/TC%20RMSEA%20%2B%2B%20.R>
 
 The first part of the code is the same as statcheck, but only different function name.
 
@@ -28,7 +28,7 @@ checkRMSEA <-
       txt <- x[i]
 ```
 
-Then I changed the function to be able to retrieve Chi2, df, RMSEA, N, etc. from the pdf article.
+Then I changed the function to be able to get Chi2, df, RMSEA, N, etc. from the pdf article.
 
 \*\*\* Note that string extraction is not case sensitive
 
@@ -66,9 +66,9 @@ We need to change it because, later, we need to extract a number from the string
       Loc <- unlist(str_replace_all(Loc, c("([vcwx]2|(\\:|\\(|\\d|\\,)\\s2|[a-zA-Z]|f\\.|\\))( 5 )((\\d*\\.\\d+)|\\d+)" = "\\1 = \\4")))
 ```
 
-In some cases, RMSEA result is reported/mentioned BEFORE chi2 value. I structured the code to look for when chi2 is reported BEFORE RMSEA first. If the amounts of chi2 and RMSEA retrieved match, then it won't look for when RMSEA is before chi2. However, this might not be efficient when the amounts of chi2 and RMSEA match, and there is also RMSEA reported before chi2.
+In some cases, RMSEA result is reported/mentioned BEFORE chi2 value. I structured the code to look for when chi2 is reported BEFORE RMSEA first. If the amounts of chi2 and RMSEA extracted match, then it won't look for when RMSEA is before chi2. However, this might not be efficient when the amounts of chi2 and RMSEA match, and there is also RMSEA reported before chi2.
 
-1.  Extract chi2 and RMSEA results as a whole sentence from Loc. Possible notations of chi2 that this code can retrieve are:
+1.  Extract chi2 and RMSEA results as a whole sentence from Loc. Possible notations of chi2 that this code can get are:
 
 <!-- -->
 
@@ -120,7 +120,7 @@ CR1 <-
       CR1 <- str_replace_all(unlist(CR1), "^[AD].*", "") 
 ```
 
-1.  Change "v2 = 1:34" to "v2 = 1.34"; remove irrelevant info to make it easier to get the right chi2 value. E.g., "w2 (df = 24, N = 337) = 38.97" -&gt; the program might mistakenly retrieve 24 or 337 as chi2 values. We remove every thing in the parentheses, including "v2" -&gt; We then get " = 38.97".
+1.  Change "v2 = 1:34" to "v2 = 1.34"; remove irrelevant info to make it easier to get the right chi2 value. E.g., "w2 (df = 24, N = 337) = 38.97" -&gt; the program might mistakenly read 24 or 337 as chi2 values. We remove every thing in the parentheses, including "v2" -&gt; We then get " = 38.97".
 
 This only works when there is df, n, and/or p-value in parentheses between a chi2 notation and a chi2 value.
 
@@ -194,7 +194,7 @@ Then extract the RMSEA value. This value is less than 1 always.
       CRMSEA <- unlist(CRMSEA[!is.na(CRMSEA)])
 ```
 
-1.  In case that the number of RMSEA retrieved and the number of chi2 retrieve are not the same (due to having a longer report and RMSEA value is too far apart from the RMSEA keyword), we try to collect the RMSEA again with more characters allowed in the string.
+1.  In case that the number of RMSEA extracted and the number of chi2 get are not the same (due to having a longer report and RMSEA value is too far apart from the RMSEA keyword), we try to collect the RMSEA again with more characters allowed in the string.
 
 ``` r
 if (length(CRMSEA) != length(CChi2)){
@@ -379,7 +379,7 @@ if (length(ngroup) == 0){
       } else {chi2RMSEA$Multi.group <- "-"}
 ```
 
-22.5. Create new columns for the results of computation, including how many model results and Ns can we retrieve from the text.
+22.5. Create new columns for the results of computation, including how many model results and Ns can we get from the text.
 
 ``` r
       chi2RMSEA$rmsea <- NA
@@ -424,7 +424,7 @@ for (j in 1:nrow(chi2RMSEA)){
       }
 ```
 
-22.7. Test for consistency between reported and computed RMSEAs (and multi-group RMSEAs). I also refer to the comparison sign retrieved from RMSEA in Step 15 and 16.
+22.7. Test for consistency between reported and computed RMSEAs (and multi-group RMSEAs). I also refer to the comparison sign extracted from RMSEA in Step 15 and 16.
 
 ``` r
 chi2RMSEA$ConsistencyRMSEA <- NA # test if the reported and computed RMSEAs are the same (same amount of digits as reported)
@@ -505,9 +505,9 @@ The written word itself will be recorded as N.Raw.
       num <- num[!duplicated(num$N),]
 ```
 
-23.3. Another way to retrieve Ns is by searching for any numbers in the article.
+23.3. Another way to get Ns is by searching for any numbers in the article.
 
-First, numbers are retrieved from a string that says "n=..."; "n equals to ...", or any numbers that are between words (e.g., "include 549 teachers"), or after a word and a comma (e.g., "in total, 16 were graduate students".
+First, numbers are extracted from a string that says "n=..."; "n equals to ...", or any numbers that are between words (e.g., "include 549 teachers"), or after a word and a comma (e.g., "in total, 16 were graduate students".
 
 The minimum is 2 digis. This includes when there are more than a thousand participants, there will be "," between the second and third digits. It won't retreive a year of publication and degrees of freedom. Duplicates are removed.
 
@@ -539,7 +539,7 @@ The string itself will be recorded as N.Raw.
 
 If multi-group is found in the article:
 
-The total amount of rows will be \# of chi2 values \* \# of Ns and \# of ngroup. Here, we need to pay attention to how each value is repeated in order to have different combinations. For example, if chi2 values retrieved are 2,3,4. Ns retrieved are 10,20,30,40. ngroups are 8,9. (df and RMSEA always go together with chi2 because they are from the same result sentence).
+The total amount of rows will be \# of chi2 values \* \# of Ns and \# of ngroup. Here, we need to pay attention to how each value is repeated in order to have different combinations. For example, if chi2 values extracted are 2,3,4. Ns extracted are 10,20,30,40. ngroups are 8,9. (df and RMSEA always go together with chi2 because they are from the same result sentence).
 
 Then we will have 24 rows with unique combinations of:
 
