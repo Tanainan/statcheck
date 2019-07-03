@@ -1,4 +1,4 @@
-getPDF <- function(x) #location of PDF
+getPDF.rmsea <- function(x) #location of PDF
 {
   txtfiles <- character(length(x))
   for (i in 1:length(x))
@@ -17,7 +17,7 @@ getPDF <- function(x) #location of PDF
 
 
 ## Function to check directory of PDFs:
-checkPDFdir <- # entire directory
+checkPDFdir.rmsea <- # entire directory
   function(dir,
            subdir = TRUE,
            ...) {
@@ -39,7 +39,7 @@ checkPDFdir <- # entire directory
     pb <- txtProgressBar(max = length(files), style = 3)
     for (i in 1:length(files))
     {
-      txts[i] <-  getPDF(files[i])
+      txts[i] <-  getPDF.rmsea(files[i])
       setTxtProgressBar(pb, i)
     }
     close(pb)
@@ -47,7 +47,7 @@ checkPDFdir <- # entire directory
     return(checkRMSEA(txts, ...))
   }
 
-checkPDF <-
+checkPDF.rmsea <-
   function(files, ...) {
     if (missing(files))
       files <- tk_choose.files()

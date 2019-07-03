@@ -8,7 +8,7 @@ The first part of the code is the same as statcheck, but only different function
 
 ``` r
 checkRMSEA <-
-  function(x) {#{
+  function(x) {{
     
     # Create empty data frame for main result:
     Res <-
@@ -635,7 +635,7 @@ chi2RMSEA$Chi2 <- chi2RMSEA$Chi2 %>% as.character() %>% as.numeric()
 
       chi2RMSEA <- chi2RMSEA[,c("Source",
                                 "Chi2","df","N","Multi.group","rmsea","RMSEA","MG.rmsea","MG.RMSEA","Sign","Reported.RMSEA","ConsistencyRMSEA","ConsistencyMG.RMSEA","Chi2.Raw","N.Raw","Total.Ns","Total.Models")]
-      } # "}" for length(Chi2) != length(N)
+      } # for length(Chi2) != length(N)
 ```
 
 1.  If results are not found, it would print "checkRMSEA did not find any results".
@@ -649,13 +649,11 @@ If results are found but something is wrong with the code, it would print "Resul
 25)) The rest of the function is similar to statcheck, but different names.
 
 ``` r
-      #}    
-        
           # Append, clean and close:
-          # Res <- rbind(Res, chi2RMSEA)
-          # rm(chi2RMSEA)
+          Res <- rbind(Res, chi2RMSEA)
+          rm(chi2RMSEA)
           
-    
+    }
       
       #----------------------
       
@@ -663,10 +661,6 @@ If results are found but something is wrong with the code, it would print "Resul
     }
     close(pb)
     Source <- NULL
-    
-    
-    # chi2RMSEA <- ddply(chi2RMSEA, .(Source), function(x) # don't need this line
-    #   x[order(x$Chi2.Raw), ])
   
   
     ###---------------------------------------------------------------------
@@ -674,29 +668,27 @@ If results are found but something is wrong with the code, it would print "Resul
     ### NOTE: adapt to match the empty data frame at the top of the code, and the variables you extracted in the step chi2RMSEA 
     
     # final data frame
-    # Res <- data.frame(
-    #   Source = Res$Source,
-    #   Chi2 = Res$Chi2,
-    #   df = Res$df,
-    #   N = Res$N,
-    #   Multi.group = Res$Multi.group,
-    #   RMSEA = Res$RMSEA,
-    #   MG.RMSEA = Res$MG.RMSEA,
-    #   Sign = Res$Sign,
-    #   Reported.RMSEA = Res$Reported.RMSEA,
-    #   ConsistencyRMSEA = Res$Consistency.RMSEA,
-    #   ConsistencyMG.RMSEA = Res$ConsistencyMG.RMSEA,
-    #   Chi2.Raw = Res$Chi2.Raw,
-    #   N.Raw = Res$N.Raw,
-    #   Total.Ns = Res$Total.Ns,
-    #   Total.Models = Res$Total.Models
-    # )
+    Res <- data.frame(
+      Source = Res$Source,
+      Chi2 = Res$Chi2,
+      df = Res$df,
+      N = Res$N,
+      Multi.group = Res$Multi.group,
+      RMSEA = Res$RMSEA,
+      MG.RMSEA = Res$MG.RMSEA,
+      Sign = Res$Sign,
+      Reported.RMSEA = Res$Reported.RMSEA,
+      ConsistencyRMSEA = Res$ConsistencyRMSEA,
+      ConsistencyMG.RMSEA = Res$ConsistencyMG.RMSEA,
+      Chi2.Raw = Res$Chi2.Raw,
+      N.Raw = Res$N.Raw,
+      Total.Ns = Res$Total.Ns,
+      Total.Models = Res$Total.Models
+    )
     
-    Res <- data.frame(chi2RMSEA)
-    
+
     class(Res) <- c("checkRMSEA", "data.frame")
 
-  #}
     ###---------------------------------------------------------------------
     
     # Return message when there are no results
@@ -708,7 +700,7 @@ If results are found but something is wrong with the code, it would print "Resul
 For the PDFimport.R file, I only change from "statcheck" to "checkRMSEA" (on the last line at the end of checkPDF and checkPDFdir functions).
 
 ``` r
-getPDF <- function(x) #location of PDF
+getPDF.rmsea <- function(x) #location of PDF
 {
   txtfiles <- character(length(x))
   for (i in 1:length(x))
@@ -727,7 +719,7 @@ getPDF <- function(x) #location of PDF
 
 
 ## Function to check directory of PDFs:
-checkPDFdir <- # entire directory
+checkPDFdir.rmsea <- # entire directory
   function(dir,
            subdir = TRUE,
            ...) {
@@ -749,7 +741,7 @@ checkPDFdir <- # entire directory
     pb <- txtProgressBar(max = length(files), style = 3)
     for (i in 1:length(files))
     {
-      txts[i] <-  getPDF(files[i])
+      txts[i] <-  getPDF.rmsea(files[i])
       setTxtProgressBar(pb, i)
     }
     close(pb)
@@ -757,7 +749,7 @@ checkPDFdir <- # entire directory
     return(checkRMSEA(txts, ...))
   }
 
-checkPDF <-
+checkPDF.rmsea <-
   function(files, ...) {
     if (missing(files))
       files <- tk_choose.files()
@@ -773,7 +765,7 @@ When this code does not work:
 
 -   When the results are in a table
 -   When a number of participants change but the final sample size is not reported (e.g., "9 participants were removed from...") (Bassi (2012))
--   When it's a multi-group. Sometimes it doesn't say how many groups in number or written word (e.g., gender) and we don't know exactly which model is computed with multi-group.
+-   When it's a multi-group. Sometimes it doesn't say how many groups in number or written word (e.g., gender) and we don't know exactly which model is computed with multi-group. This also includes when the keyword is in the reference.
 -   The text itself, such as
     -   x 2 13 1/4 21:19 (Bakker (2007))
     -   v instead of v2 (de Marco (2006))

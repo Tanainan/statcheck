@@ -6,7 +6,7 @@ source("~/Downloads/StatCheck/StatCheck/R/TC getPDF.R")
 source("~/Downloads/StatCheck/StatCheck/R/TC numbers.R")
 
 checkRMSEA <-
-  function(x) {#{
+  function(x) {{
     
     # Create empty data frame for main result:
     Res <-
@@ -376,17 +376,23 @@ checkRMSEA <-
 
       chi2RMSEA <- chi2RMSEA[,c("Source",
                                 "Chi2","df","N","Multi.group","rmsea","RMSEA","MG.rmsea","MG.RMSEA","Sign","Reported.RMSEA","ConsistencyRMSEA","ConsistencyMG.RMSEA","Chi2.Raw","N.Raw","Total.Ns","Total.Models")]
-      } # "}" for length(Chi2) != length(N)
+      } # for length(Chi2) != length(N)
               
-            }}} else {if (length(Chi2) != length(df)| length(RMSEA) != length(Chi2)) {chi2RMSEA <- cat("\nResults found but incomplete\n")}}} else {chi2RMSEA <- cat("\ncheckRMSEA did not find any results\n")}
-      #}    
-        
-          # Append, clean and close:
-          # Res <- rbind(Res, chi2RMSEA)
-          # rm(chi2RMSEA)
+            }}}  else {if (length(Chi2) != length(df)| length(RMSEA) != length(Chi2)) {chi2RMSEA <- cat("\nResults found but incomplete\n")}}
+        }  else {chi2RMSEA <- cat("\ncheckRMSEA did not find any results\n")}
           
-    
+        
+      # if (nrow(chi2RMSEA) >= 1) {
+      #   chi2RMSEA$Source = names(x)[i]}
       
+          # Append, clean and close:
+          Res <- rbind(Res, chi2RMSEA)
+          rm(chi2RMSEA)
+          
+    }
+      
+    
+    
       #----------------------
       
       setTxtProgressBar(pb, i)
@@ -394,9 +400,6 @@ checkRMSEA <-
     close(pb)
     Source <- NULL
     
-    
-    # chi2RMSEA <- ddply(chi2RMSEA, .(Source), function(x) # don't need this line
-    #   x[order(x$Chi2.Raw), ])
   
   
     ###---------------------------------------------------------------------
@@ -404,35 +407,34 @@ checkRMSEA <-
     ### NOTE: adapt to match the empty data frame at the top of the code, and the variables you extracted in the step chi2RMSEA 
     
     # final data frame
-    # Res <- data.frame(
-    #   Source = Res$Source,
-    #   Chi2 = Res$Chi2,
-    #   df = Res$df,
-    #   N = Res$N,
-    #   Multi.group = Res$Multi.group,
-    #   RMSEA = Res$RMSEA,
-    #   MG.RMSEA = Res$MG.RMSEA,
-    #   Sign = Res$Sign,
-    #   Reported.RMSEA = Res$Reported.RMSEA,
-    #   ConsistencyRMSEA = Res$Consistency.RMSEA,
-    #   ConsistencyMG.RMSEA = Res$ConsistencyMG.RMSEA,
-    #   Chi2.Raw = Res$Chi2.Raw,
-    #   N.Raw = Res$N.Raw,
-    #   Total.Ns = Res$Total.Ns,
-    #   Total.Models = Res$Total.Models
-    # )
-    
-    Res <- data.frame(chi2RMSEA)
+    Res <- data.frame(
+      Source = Res$Source,
+      Chi2 = Res$Chi2,
+      df = Res$df,
+      N = Res$N,
+      Multi.group = Res$Multi.group,
+      RMSEA = Res$RMSEA,
+      MG.RMSEA = Res$MG.RMSEA,
+      Sign = Res$Sign,
+      Reported.RMSEA = Res$Reported.RMSEA,
+      ConsistencyRMSEA = Res$ConsistencyRMSEA,
+      ConsistencyMG.RMSEA = Res$ConsistencyMG.RMSEA,
+      Chi2.Raw = Res$Chi2.Raw,
+      N.Raw = Res$N.Raw,
+      Total.Ns = Res$Total.Ns,
+      Total.Models = Res$Total.Models
+    )
     
     class(Res) <- c("checkRMSEA", "data.frame")
 
-  #}
+  
     ###---------------------------------------------------------------------
     
     # Return message when there are no results
     if (nrow(Res) > 0) {
       return(Res) 
-     }}
+    } # else {Res <- cat("\n checkRMSEA did not find any results or results found but incomplete info\n")}
+    }
     
     
   
