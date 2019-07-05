@@ -37,12 +37,12 @@ checkRMSEA <-
       Loc <- unlist(str_replace_all(Loc, c("([vcwx]2|(\\:|\\(|\\d|\\,)\\s2|[a-zA-Z]|f\\.|\\))( 5 )((\\d*\\.\\d+)|\\d+)" = "\\1 = \\4"))) # when "=" was read as "5" -> change back to "=" 
 
       # If Chi2 is reported before RMSEA ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++====
-      CR <- str_extract_all(unlist(Loc), regex("((chi-square (?!difference)|chisquare|chi-square of|A?D?[vcwx]2\\s?(=|\\(|of)|(\\:|\\(|\\d|\\,)\\s?2\\s?(\\(|\\=))(.){0,40}((\\d*\\.\\d+)|\\d+)(.){0,300}(root mean square error of approximation|root-mean-square error of approximation|RMSEA)\\s(.){0,40}\\s(0?\\.\\d+))", ignore_case = TRUE))
-      CR1 <- str_extract_all(unlist(CR), regex("((chi-square (?!difference)|chisquare|chi-square of|A?D?[vcwx]2\\s?(=|\\(|of)|(\\:|\\(|\\d|\\,)\\s?2\\s?(\\(|\\=))(.){0,40}((\\d*\\.\\d+)|\\d+)(.){0,20})", ignore_case = TRUE))
+      CR <- str_extract_all(unlist(Loc), regex("((chi-square (?!difference)|chisquare|chi-square of|A?D?[vcwx]2\\s?(=|\\(|of)|(\\:|\\(|\\d|\\,)\\s?2\\s?(\\(|\\=))(.){0,40}((\\d*\\,?\\d*\\.\\d+)|\\d*\\,?\\d+)(.){0,300}(root mean square error of approximation|root-mean-square error of approximation|RMSEA)\\s(.){0,40}\\s(0?\\.\\d+))", ignore_case = TRUE))
+      CR1 <- str_extract_all(unlist(CR), regex("((chi-square (?!difference)|chisquare|chi-square of|A?D?[vcwx]2\\s?(=|\\(|of)|(\\:|\\(|\\d|\\,)\\s?2\\s?(\\(|\\=))(.){0,40}((\\d*\\,?\\d*\\.\\d+)|\\d*\\,?\\d+)(.){0,20})", ignore_case = TRUE))
 
       # Get Chi2 
-      CR2 <- str_replace_all(unlist(CR1), c("\\((.){1,20}\\)" = "", "\\s\\s" = " "))
-      CR3 <- str_extract_all(unlist(CR2), regex("((chi-square (?!difference)|chisquare|chi-square of|A?D?[vcwx]2\\s?(=|\\(|of)|(\\:|\\(|\\d|\\,)\\s?2\\s?(\\(|\\=))(.){0,20}((\\d*\\.\\d+)|\\d+))", ignore_case = TRUE))
+      CR2 <- str_replace_all(unlist(CR1), c("\\((.){1,20}\\)" = "", "\\s\\s" = " ", "(\\d)(\\,)(\\d)" = "\\1\\3"))
+      CR3 <- str_extract_all(unlist(CR2), regex("((chi-square (?!difference)|chisquare|chi-square of|A?D?[vcwx]2\\s?(=|\\(|of)|(\\:|\\(|\\d|\\,)\\s?2\\s?(\\(|\\=))(.){0,20}((\\d*\\,?\\d*\\.\\d+)|\\d*\\,?\\d+))", ignore_case = TRUE))
       CR4 <- str_replace_all(unlist(CR3), c("[vcwx]2|(\\:|\\(|\\d|\\,)\\s2\\s" = ""))
       CR5 <- str_replace_all(unlist(CR4), "^[AD].*", "") # remove Chi2 difference
       CChi2 <- unlist(str_extract(unlist(CR5), regex("(?!(2\\s))((\\d*\\.\\d+)|\\d+)")))
@@ -104,12 +104,12 @@ checkRMSEA <-
      
       if (length(Chi2) != length(RMSEA)){
         
-      RC <- unlist(str_extract_all(unlist(Loc), regex("((root mean square error of approximation|root-mean-square error of approximation|RMSEA)(.){0,20}(0?\\.\\d+)(.){0,80}(chi-square (?!difference)|chiquare|chi-square of|A?D?[vcw]2\\s?\\=?\\s?\\(|(\\:|\\(|\\d|\\,)\\s?2\\s?(\\(|\\=))(.){0,40}((\\d*\\.\\d+)|\\d+))(.){0,30}", ignore_case = T)))
-      RC1 <- str_extract_all(unlist(CR), regex("((chi-square (?!difference)|chisquare|chi-square of|A?D?[vcwx]2\\s?(=|\\(|of)|(\\:|\\(|\\d|\\,)\\s?2\\s?(\\(|\\=))(.){0,40}((\\d*\\.\\d+)|\\d+)(.){0,30})", ignore_case = TRUE))
+      RC <- unlist(str_extract_all(unlist(Loc), regex("((root mean square error of approximation|root-mean-square error of approximation|RMSEA)(.){0,20}(0?\\.\\d+)(.){0,80}(chi-square (?!difference)|chiquare|chi-square of|A?D?[vcw]2\\s?\\=?\\s?\\(|(\\:|\\(|\\d|\\,)\\s?2\\s?(\\(|\\=))(.){0,40}((\\d*\\,?\\d*\\.\\d+)|\\d*\\,?\\d+))(.){0,30}", ignore_case = T)))
+      RC1 <- str_extract_all(unlist(CR), regex("((chi-square (?!difference)|chisquare|chi-square of|A?D?[vcwx]2\\s?(=|\\(|of)|(\\:|\\(|\\d|\\,)\\s?2\\s?(\\(|\\=))(.){0,40}((\\d*\\,?\\d*\\.\\d+)|\\d*\\,?\\d+)(.){0,30})", ignore_case = TRUE))
       
       # Get Chi2 
-      RC2 <- str_replace_all(unlist(RC1), c("\\((.){1,20}\\)" = "", "\\s\\s" = " "))
-      RC3 <- str_extract_all(unlist(RC2), regex("((chi-square (?!difference)|chisquare|chi-square of|A?D?[vcwx]2\\s?(=|\\(|of)|(\\:|\\(|\\d|\\,)\\s?2\\s?(\\(|\\=))(.){0,20}((\\d*\\.\\d+)|\\d+))", ignore_case = TRUE))
+      RC2 <- str_replace_all(unlist(RC1), c("\\((.){1,20}\\)" = "", "\\s\\s" = " ", "(\\d)(\\,)(\\d)" = "\\1\\3"))
+      RC3 <- str_extract_all(unlist(RC2), regex("((chi-square (?!difference)|chisquare|chi-square of|A?D?[vcwx]2\\s?(=|\\(|of)|(\\:|\\(|\\d|\\,)\\s?2\\s?(\\(|\\=))(.){0,20}((\\d*\\,?\\d*\\.\\d+)|\\d*\\,?\\d+))", ignore_case = TRUE))
       RC4 <- str_replace_all(unlist(RC3), c("[vcwx]2|(\\:|\\(|\\d|\\,)\\s2\\s" = ""))
       RC5 <- str_replace_all(unlist(RC4), "^[AD].*", "") # remove Chi2 difference
       RChi2 <- unlist(str_extract(unlist(RC5), regex("(?!(2\\s))((\\d*\\.\\d+)|\\d+)")))
