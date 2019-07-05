@@ -3,61 +3,108 @@ library(tidyverse)
 library(rio)
 setwd("~/Downloads/Pdfs/AMOS/Done")
 
+# AMOS
+
 txt <- readLines("Ahmad (2004).txt") # no result found
 txt <- readLines("Ahmetoglu (2010).txt") # ok
-txt <- readLines("Alonso-Tapia (2010).txt") #
+txt <- readLines("Alonso-Tapia (2010).txt") # no result found
 txt <- readLines("Anderson (2008).txt") # no RMSEA
 txt <- readLines("Arendasy (2007).txt") # no RMSEA
 txt <- readLines("Arendasy (2012).txt") # no RMSEA
 txt <- readLines("Atwater (2009).txt") # duplicate 596.8 
 txt <- readLines("Bakker (2007).txt") # data, x 2 13 1/4 21:19, p 1/4 0:07, GFI 1/4 0:97, TLI 1/4 0:93, CFI 1/4 0:96, RMSEA 1/4 0:06;
 txt <- readLines("Bakker (2008a).txt") # ok but cannot get N (table)
+txt <- readLines("Bakker (2008b).txt") # ok
 txt <- readLines("Bartomeus (2010).txt") # no result found
 txt <- readLines("Bassi (2012).txt") # 9 ppl were removed from 184
 txt <- readLines("Beckjord (2009).txt") # no RMSEA
 txt <- readLines("Belsky (2007).txt") # ok
 txt <- readLines("Bowers (2007).txt") # no result found
-txt <- readLines("Bradford (2008).txt")  # 2 = chi2
+txt <- readLines("Bradford (2008).txt")  # 2 = chi2 ok
 txt <- readLines("Branje (2007).txt") # no result found
 txt <- readLines("Burt (2006).txt") # chi2 = 2, RMSEA too far apart
 txt <- readLines("Burt (2009).txt") # no result
 txt <- readLines("Carmeli (2006).txt") # ok
 txt <- readLines("Carter (2006).txt") # read = as "s"
 txt <- readLines("Castro-Costa (2008).txt") # get more results than supposed to
-txt <- readLines("Cousins (2007).txt") # cannot read "="
+txt <- readLines("Cousins (2007).txt") # cannot read "=" ok
 txt <- readLines("Curby (2008).txt") # no result
 txt <- readLines("Dabos (2013).txt") # no result
 txt <- readLines("de Marco (2006).txt") # chi2 = "v"
 txt <- readLines("de Marco (2009).txt") # no result
-
-
-
 txt <- readLines("Dunn (2006).txt") # no "=", chi2 = 2
 txt <- readLines("Dunn (2012).txt") # ok
 txt <- readLines("Furnham (2009).txt") # no chi2 symbol
+txt <- readLines("Furuya (2009).txt") # no result found ----
 txt <- readLines("Gano-Overway (2009).txt") # "=" is "s" ?????
 txt <- readLines("Gaylord-Harden (2007).txt") # no chi2 symbol
 txt <- readLines("Gheldof (2006).txt") # no result
 txt <- readLines("Gheldof (2010).txt") # ok
 txt <- readLines("Gill (2013).txt") # result too far apart
 txt <- readLines("Gluszek (2011).txt") # ok! 
+txt <- readLines("Goncalves-Souza (2011).txt") # no result found -----
 txt <- readLines("Gutieerrez (2006).txt") # ok
 txt <- readLines("Halperin (2011).txt") # ok
-txt <- readLines("Hoglund (2007).txt") # ok!
+txt <- readLines("Hoglund (2007).txt") # no result found ---
+txt <- readLines("Huta (2007).txt") # no result found ----
 txt <- readLines("Jasuja (2008).txt") # doesn't read a line about df
-txt <- readLines("Johnson (2008).txt") # ok?
-txt <- readLines("Kark (2009).txt") # ok!
-txt <- readLines("Kim (2009).txt")  # ok!
+txt <- readLines("Johnson (2008).txt") # no result found
+txt <- readLines("Kark (2009).txt") # no result found
+txt <- readLines("Kim (2009).txt") # ok!
 txt <- readLines("Kim (2010).txt") # ok 
-txt <- readLines("Kong (2012).txt") # 
+txt <- readLines("Klag (2006).txt") # mistakenly extract chi2 diff
+txt <- readLines("Klages (2006).txt") # no result found ---
+txt <- readLines("Knoll (2007).txt") # no result found ---
+txt <- readLines("Kogan (2008).txt") # no result found ---
+txt <- readLines("Kong (2012).txt") # no result found ---
 txt <- readLines("Lachman (2006).txt") # ok
+txt <- readLines("Langerhans (2007).txt") # no result found --
 txt <- readLines("Lee (2007).txt") # ok!
 txt <- readLines("Lee (2013).txt") # no result found
 txt <- readLines("Loyens (2007).txt") # RMSEA too far from Chi2 + table result
 txt <- readLines("Mandara (2009).txt") # ok!
+txt <- readLines("McGrew (2007).txt") # no result found ---
 txt <- readLines("Molero (2011).txt") # result table
 txt <- readLines("Monsen (2009).txt") # result table
+txt <- readLines("Moretti (2006).txt") # no result found ---
+txt <- readLines("Moya-Larano (2006).txt") # no result found
 txt <- readLines("Ngo-Metzger (2008).txt") # ok
+txt <- readLines("Nijhof (2009).txt") # ok
+txt <- readLines("Nijs (2007).txt") # no result found ---
+txt <- readLines("Nikolopoulos (2006).txt") # no result found ---
+txt <- readLines("Olano (2012).txt") # no result found ---
+txt <- readLines("Owen (2009).txt") # no result found ---
+txt <- readLines("Paillé (2013).txt") # no result found ---
+txt <- readLines("Parchman (2010).txt") # no result found ---
+txt <- readLines("Peled (2007).txt") # no result found ---
+txt <- readLines("Puente (2008).txt") # no result found ---
+txt <- readLines("Quilty (2004).txt") # no result found ---
+txt <- readLines("Rapee (2005).txt") # ok
+txt <- readLines("Reynolds (2008).txt") # ok
+txt <- readLines("Riggs (2009a).txt") # no result found ---
+txt <- readLines("Riggs (2009b).txt") # no result found ---
+txt <- readLines("Riggs (2009c).txt") # no result found ---
+txt <- readLines("Roest (2010).txt") # no result found ---
+txt <- readLines("Ryan (2008).txt") # no result found ---
+txt <- readLines("Sani (2007).txt") # ok
+txt <- readLines("Sani (2008).txt") # ok
+txt <- readLines("Schepers (2008).txt") # ok
+txt <- readLines("Schippers (2010).txt") # ok
+txt <- readLines("Siegrist (2007).txt") # no result found ---
+txt <- readLines("Smith (2013).txt") # no result found ---
+txt <- readLines("Snoek (2007).txt") # no result found ---
+txt <- readLines("Sousa (2007).txt") # no result found ---
+txt <- readLines("Subramony (2008).txt") # ok
+txt <- readLines("Tapia (2013).txt") # no result found --- 
+txt <- readLines("Teng (2011).txt") # no result found ---
+txt <- readLines("van Braak (2004).txt") # no result found ---
+txt <- readLines("van der Heijden (2009).txt") # ok
+txt <- readLines("van der Vorst (2005).txt") # no result found ---
+txt <- readLines("Vervoort (2010).txt") # no result found --- 
+txt <- readLines("Wallgren (2007).txt") # no result found ---
+txt <- readLines("Wu (2009).txt") # no result found ---
+txt <- readLines("Zettle (2013).txt") # no result found
+txt <- readLines("Zhao (2013).txt") # ok
 
 
 
@@ -65,8 +112,87 @@ txt <- readLines("Ngo-Metzger (2008).txt") # ok
 
 
 
+# Mplus
+
+setwd("~/Downloads/Pdfs/Mplus/Done")
 
 
+txt <- readLines("Ammerman (2013).txt") # no
+txt <- readLines("Ansell (2010).txt") # no
+txt <- readLines("Armey (2011).txt") # no
+txt <- readLines("Backman (2011).txt") # no
+txt <- readLines("Beirens (2010).txt") # no
+txt <- readLines("Beyers (2010).txt") # ok
+txt <- readLines("Bindman (2013).txt") # ok
+txt <- readLines("Brandlistuen (2010).txt") # no
+txt <- readLines("Brook (2011).txt") # no
+txt <- readLines("Bucx (2010).txt") # ok
+txt <- readLines("Burns (2009).txt") # no
+txt <- readLines("Byrne (2013).txt") # no
+txt <- readLines("Chen (2013).txt") # no
+txt <- readLines("Cheng (2009).txt") # no
+txt <- readLines("Cheung (2009).txt") # no
+txt <- readLines("Chmielewski (2011).txt") # no
+txt <- readLines("Chun (2013).txt") # no
+txt <- readLines("Cooney (2008).txt") # no
+txt <- readLines("Daschmann (2011).txt") # no
+txt <- readLines("Davis (2012).txt") # no
+txt <- readLines("de Menezes (2011).txt") # no
+txt <- readLines("de Stavola (2011).txt") # no
+txt <- readLines("Dooley (2010).txt") # ok
+txt <- readLines("Duncan (2011).txt") # no
+txt <- readLines("Eaton (2013).pdf.txt") # no
+txt <- readLines("Evans (2013).txt") # no
+txt <- readLines("Ferrando (2009).txt") # no
+txt <- readLines("Gardner (2009).txt") # ok
+txt <- readLines("Gibbons (2010).txt") # ok
+txt <- readLines("Goodwin (2012).txt") # ok
+txt <- readLines("Green (2010).txt") # no
+txt <- readLines("Grilli (2011).txt") # no
+txt <- readLines("Gschwendner (2008).txt") # no
+txt <- readLines("Gustavsson-Lilius (2012).txt") # no
+txt <- readLines("Hall (2010).txt") # no
+txt <- readLines("Hall (2012).txt") # no
+txt <- readLines("Harring (2012).txt") # no
+txt <- readLines("Hassel (2011).txt") # no
+txt <- readLines("Herrenkohl (2012).txt") # no
+txt <- readLines("Herzog (2009).txt") # no
+txt <- readLines("Hicks (2011).txt")
+txt <- readLines(".txt")
+txt <- readLines(".txt")
+txt <- readLines(".txt")
+txt <- readLines(".txt")
+txt <- readLines(".txt")
+txt <- readLines(".txt")
+txt <- readLines(".txt")
+txt <- readLines(".txt")
+txt <- readLines(".txt")
+txt <- readLines(".txt")
+txt <- readLines(".txt")
+txt <- readLines(".txt")
+txt <- readLines(".txt")
+txt <- readLines(".txt")
+txt <- readLines(".txt")
+txt <- readLines(".txt")
+txt <- readLines(".txt")
+txt <- readLines(".txt")
+txt <- readLines(".txt")
+txt <- readLines(".txt")
+txt <- readLines(".txt")
+txt <- readLines(".txt")
+txt <- readLines(".txt")
+txt <- readLines(".txt")
+txt <- readLines(".txt")
+txt <- readLines(".txt")
+txt <- readLines(".txt")
+txt <- readLines(".txt")
+txt <- readLines(".txt")
+
+
+
+# EQS
+setwd("~/Downloads/Pdfs/EQS/Done")
+txt <- readLines("Fincham (2002).txt")
 
 
 

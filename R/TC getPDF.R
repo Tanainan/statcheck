@@ -52,7 +52,7 @@ checkPDF.rmsea <-
     if (missing(files))
       files <- tk_choose.files()
     
-    txts <-  sapply(files, getPDF)
+    txts <-  sapply(files, getPDF.rmsea)
     names(txts) <-
       gsub("\\.pdf$", "", basename(files), perl = TRUE)
     return(checkRMSEA(txts, ...))

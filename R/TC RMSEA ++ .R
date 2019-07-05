@@ -4,13 +4,12 @@ library(stringr)
 
 source("~/Downloads/StatCheck/StatCheck/R/TC getPDF.R")
 source("~/Downloads/StatCheck/StatCheck/R/TC numbers.R")
+setwd("~/Downloads/Pdfs/AMOS/Done")
 
 checkRMSEA <-
   function(x) {{
     
-    # Create empty data frame for main result:
-    Res <-
-      data.frame(NULL)
+    Res <- data.frame(NULL)
     
     class(Res) <- c("checkRMSEA", "data.frame")
     
@@ -27,33 +26,31 @@ checkRMSEA <-
       
       #---------------------------
       
-      #if (length(txt) != 0){
+      if (length(txt) != 0){
         
-      txt <- unlist(str_replace_all(txt, c("1/4" = "=", "  " = " ", "\\[" = "(", "\\]" = ")"))) # replace "1/4" to "=", double spacing to single spacing, [] to ()
+      txt <- unlist(str_replace_all(txt, c("1/4" = "=", "  " = " = ", "\\[" = "(", "\\]" = ")", "(\\:)(\\d)" = ".\\2"))) # replace "1/4" to "=", double spacing to single spacing, [] to ()
       
       
       # extract paragraphs containing Chis2-values by locating RMSEA first:
-      Loc <- str_subset(txt, regex("(((root mean square error of approximation|root-mean-square error of approximation|\\(?RMSEA\\)?)(.){0,20}((\\.|\\:)\\d+)))", ignore_case = T))
+      Loc <- str_subset(txt, regex("(((root mean square error of approximation|root-mean-square error of approximation|\\(?RMSEA\\)?)(.){0,20}(\\.\\d+)))", ignore_case = T))
       Loc <- unlist(str_replace_all(Loc, c("([vcwx]2|(\\:|\\(|\\d|\\,)\\s2|[a-zA-Z]|f\\.|\\))(5)((\\d*\\.\\d+)|\\d+)" = "\\1 = \\4"))) # when "=" was read as "5" -> change back to "=" 
       Loc <- unlist(str_replace_all(Loc, c("([vcwx]2|(\\:|\\(|\\d|\\,)\\s2|[a-zA-Z]|f\\.|\\))( 5 )((\\d*\\.\\d+)|\\d+)" = "\\1 = \\4"))) # when "=" was read as "5" -> change back to "=" 
 
-      # If Chi2 is reported before RMSEA ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-      CR <-
-        str_extract_all(unlist(Loc), regex("((chi-square (?!difference)|chisquare|chi-square of|A?D?[vcwx]2\\s?(=|\\(|of)|(\\:|\\(|\\d|\\,)\\s?2\\s?(\\(|\\=))(.){0,40}((\\d*(\\.|\\:)\\d+)|\\d+)(.){0,300}(root mean square error of approximation|root-mean-square error of approximation|RMSEA)\\s(.){0,40}\\s(0?(\\.|\\:)\\d+))",
-                                                    ignore_case = TRUE))
-      
-      # Remove all space?
-      
+      # If Chi2 is reported before RMSEA ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++====
+      CR <- str_extract_all(unlist(Loc), regex("((chi-square (?!difference)|chisquare|chi-square of|A?D?[vcwx]2\\s?(=|\\(|of)|(\\:|\\(|\\d|\\,)\\s?2\\s?(\\(|\\=))(.){0,40}((\\d*\\.\\d+)|\\d+)(.){0,300}(root mean square error of approximation|root-mean-square error of approximation|RMSEA)\\s(.){0,40}\\s(0?\\.\\d+))", ignore_case = TRUE))
+      CR1 <- str_extract_all(unlist(CR), regex("((chi-square (?!difference)|chisquare|chi-square of|A?D?[vcwx]2\\s?(=|\\(|of)|(\\:|\\(|\\d|\\,)\\s?2\\s?(\\(|\\=))(.){0,40}((\\d*\\.\\d+)|\\d+)(.){0,20})", ignore_case = TRUE))
+
       # Get Chi2 
-      CR1 <-
-        str_extract_all(unlist(CR), regex("((chi-square (?!difference)|chisquare|chi-square of|A?D?[vcwx]2\\s?(=|\\(|of)|(\\:|\\(|\\d|\\,)\\s?2\\s?(\\(|\\=))(.){0,20}((\\d*(\\.|\\:)\\d+)|\\d+))",
-                                                ignore_case = TRUE))
-      CR1 <- str_replace_all(unlist(CR1), "^[AD].*", "") # remove Chi2 difference
-      CR2 <- str_replace_all(unlist(CR1), c("\\:" = "\\.", "\\((.){1,20}\\)" = "", "[vcwx]2|(\\:|\\(|\\d|\\,)\\s2\\s" = ""))
-      CChi2 <- unlist(str_extract(unlist(CR2), regex("(?!(2\\s))((\\d*\\.\\d+)|\\d+)")))
-      C <- data.frame(Chi2.Raw = unlist(CR1), Chi2 = unlist(CChi2)) # create a data frame
-      #CChi2 <- unlist(CChi2[!is.na(CChi2)])
-      C <- na.omit(C)
+      CR2 <- str_replace_all(unlist(CR1), c("\\((.){1,20}\\)" = "", "\\s\\s" = " "))
+      CR3 <- str_extract_all(unlist(CR2), regex("((chi-square (?!difference)|chisquare|chi-square of|A?D?[vcwx]2\\s?(=|\\(|of)|(\\:|\\(|\\d|\\,)\\s?2\\s?(\\(|\\=))(.){0,20}((\\d*\\.\\d+)|\\d+))", ignore_case = TRUE))
+      CR4 <- str_replace_all(unlist(CR3), c("[vcwx]2|(\\:|\\(|\\d|\\,)\\s2\\s" = ""))
+      CR5 <- str_replace_all(unlist(CR4), "^[AD].*", "") # remove Chi2 difference
+      CChi2 <- unlist(str_extract(unlist(CR5), regex("(?!(2\\s))((\\d*\\.\\d+)|\\d+)")))
+      
+      if (length(CChi2) == length(unlist(CR1))){
+        C <- data.frame(Chi2.Raw = unlist(CR1), Chi2 = unlist(CChi2)) # create a data frame
+        C <- na.omit(C)
+      } else {C <- data.frame(NULL)}
         
       # Extract df:
       Cddd <- str_extract_all(unlist(CR), regex("((\\(|\\s)\\(?(df|d|d.f.)\\s?[<>=]?|(2|2\\s)\\(|degrees of freedom of)\\s?(?!0)\\d+\\s?\\,?|\\s?(?!0)\\d+\\s(df|degrees of freedom)|\\(\\d+\\)", ignore_case = T))
@@ -64,16 +61,16 @@ checkRMSEA <-
       
      
       # Get RMSEA
-      Crrr <- str_extract_all(unlist(CR), regex("((root mean square error of approximation|root-mean-square error of approximation|RMSEA)(.){0,10}\\s(0?(\\.|\\:)\\d+))", ignore_case = T))
-      Crrr <- Crrr[!is.na(Crrr)]
-      Crrr <- unlist(str_replace_all(unlist(Crrr), c(":" = ".", " , " = " < ")))
+      Crrr <- str_extract_all(unlist(CR), regex("((root mean square error of approximation|root-mean-square error of approximation|RMSEA)(.){0,10}\\s(0?\\.\\d+))", ignore_case = T))
+      Crrr <- unlist(Crrr[!is.na(Crrr)])
+      Crrr <- unlist(str_replace_all(unlist(Crrr), c(" , " = " < ")))
       CRMSEA <- unlist(str_extract_all(unlist(Crrr), regex("\\.\\d+")))
       CRMSEA <- unlist(CRMSEA[!is.na(CRMSEA)])
       
       if (length(CRMSEA) != length(CChi2)){
-        Crrr <- str_extract_all(unlist(CR), regex("((root mean square error of approximation|root-mean-square error of approximation|RMSEA)(.){0,20}\\s(0?(\\.|\\:)\\d+))", ignore_case = T))
+        Crrr <- str_extract_all(unlist(CR), regex("((root mean square error of approximation|root-mean-square error of approximation|RMSEA)(.){0,20}\\s(0?\\.\\d+))", ignore_case = T))
         Crrr <- Crrr[!is.na(Crrr)]
-        Crrr <- unlist(str_replace_all(unlist(Crrr), c(":" = ".", " , " = " < ")))
+        Crrr <- unlist(str_replace_all(unlist(Crrr), c(" , " = " < ")))
         CRMSEA <- unlist(str_extract(unlist(Crrr), regex("\\.\\d+")))
         CRMSEA <- unlist(CRMSEA[!is.na(CRMSEA)]) 
       }
@@ -103,21 +100,23 @@ checkRMSEA <-
       nnn <- list(Cnnn) %>% unlist
       
       # If length(Chi2) != length(RMSEA) 
-      # Try if RMSEA is reported before Chi2 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+      # If RMSEA is reported before Chi2 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++====
      
       if (length(Chi2) != length(RMSEA)){
-      RC <- unlist(str_extract_all(unlist(Loc), regex("((root mean square error of approximation|root-mean-square error of approximation|RMSEA)(.){0,20}(0?(\\.|\\:)\\d+)(.){0,80}(chi-square (?!difference)|chiquare|chi-square of|A?D?[vcw]2\\s?\\=?\\s?\\(|(\\:|\\(|\\d|\\,)\\s?2\\s?(\\(|\\=))(.){0,40}((\\d*(\\.|\\:)\\d+)|\\d+))(.){0,30}", ignore_case = T)))
+        
+      RC <- unlist(str_extract_all(unlist(Loc), regex("((root mean square error of approximation|root-mean-square error of approximation|RMSEA)(.){0,20}(0?\\.\\d+)(.){0,80}(chi-square (?!difference)|chiquare|chi-square of|A?D?[vcw]2\\s?\\=?\\s?\\(|(\\:|\\(|\\d|\\,)\\s?2\\s?(\\(|\\=))(.){0,40}((\\d*\\.\\d+)|\\d+))(.){0,30}", ignore_case = T)))
+      RC1 <- str_extract_all(unlist(CR), regex("((chi-square (?!difference)|chisquare|chi-square of|A?D?[vcwx]2\\s?(=|\\(|of)|(\\:|\\(|\\d|\\,)\\s?2\\s?(\\(|\\=))(.){0,40}((\\d*\\.\\d+)|\\d+)(.){0,30})", ignore_case = TRUE))
       
-
-      # Get Chi2
-      RC1 <- str_extract_all(unlist(RC), regex("((chi-square (?!difference)|chisquare|chi-square of|A?D?[vcwx]2\\s?(=|\\(|of)|(\\:|\\(|\\d|\\,)\\s?2\\s?(\\(|\\=))(.){0,20}((\\d*(\\.|\\:)\\d+)|\\d+))",
-                                               ignore_case = TRUE))
-      RC1 <- str_replace_all(unlist(RC1), "^[AD].*", "")
-      RC2 <- str_replace_all(unlist(RC1), c("\\:" = "\\.", "\\((.){1,20}\\)" = "", "[vcwx]2|(\\:|\\(|\\d|\\,)\\s2\\s" = ""))
-      RChi2 <- unlist(str_extract(unlist(RC2), regex("(?!(2\\s))((\\d*\\.\\d+)|\\d+)")))
+      # Get Chi2 
+      RC2 <- str_replace_all(unlist(RC1), c("\\((.){1,20}\\)" = "", "\\s\\s" = " "))
+      RC3 <- str_extract_all(unlist(RC2), regex("((chi-square (?!difference)|chisquare|chi-square of|A?D?[vcwx]2\\s?(=|\\(|of)|(\\:|\\(|\\d|\\,)\\s?2\\s?(\\(|\\=))(.){0,20}((\\d*\\.\\d+)|\\d+))", ignore_case = TRUE))
+      RC4 <- str_replace_all(unlist(RC3), c("[vcwx]2|(\\:|\\(|\\d|\\,)\\s2\\s" = ""))
+      RC5 <- str_replace_all(unlist(RC4), "^[AD].*", "") # remove Chi2 difference
+      RChi2 <- unlist(str_extract(unlist(RC5), regex("(?!(2\\s))((\\d*\\.\\d+)|\\d+)")))
+     
+      if (length(RChi2) == length(unlist(RC1))){
       R <- data.frame(Chi2.Raw = unlist(RC1), Chi2 = unlist(RChi2)) # create a data frame
-      #RChi2 <- unlist(RChi2[!is.na(RChi2)])
-      R <- na.omit(R)
+      R <- na.omit(R)} else {R <- data.frame(NULL)}
       
       # Get df
       Rddd <- str_extract_all(unlist(RC), regex("((\\(|\\s)\\(?(df|d|d.f.)\\s?[<>=]?|(2|2\\s)\\(|degrees of freedom of)\\s?(?!0)\\d+\\s?\\,?|\\s?(?!0)\\d+\\s(df|degrees of freedom)|\\(\\d+\\)", ignore_case = T))
@@ -127,16 +126,16 @@ checkRMSEA <-
       
     
       # Get RMSEA
-      Rrrr <- str_extract_all(unlist(RC), regex("((root mean square error of approximation|root-mean-square error of approximation|RMSEA)(.){0,10}\\s(0?(\\.|\\:)\\d+))", ignore_case = T))
+      Rrrr <- str_extract_all(unlist(RC1), regex("((root mean square error of approximation|root-mean-square error of approximation|RMSEA)(.){0,10}\\s(0?\\.\\d+))", ignore_case = T))
       Rrrr <- Rrrr[!is.na(Rrrr)]
-      Rrrr <- unlist(str_replace_all(unlist(Rrrr), c(":" = ".", " , " = " < ")))
+      Rrrr <- unlist(str_replace_all(unlist(Rrrr), c(" , " = " < ")))
       RRMSEA <- unlist(str_extract_all(unlist(Rrrr), regex("\\.\\d+")))
       RRMSEA <- unlist(RRMSEA[!is.na(RRMSEA)])
       
       if (length(RRMSEA) != length(RChi2)){
-        Rrrr <- str_extract_all(unlist(RC), regex("((root mean square error of approximation|root-mean-square error of approximation|RMSEA)(.){0,20}\\s(0?(\\.|\\:)\\d+))", ignore_case = T))
+        Rrrr <- str_extract_all(unlist(RC), regex("((root mean square error of approximation|root-mean-square error of approximation|RMSEA)(.){0,20}\\s(0?\\.\\d+))", ignore_case = T))
         Rrrr <- Rrrr[!is.na(Rrrr)]
-        Rrrr <- unlist(str_replace_all(unlist(Rrrr), c(":" = ".", " , " = " < ")))
+        Rrrr <- unlist(str_replace_all(unlist(Rrrr), c(" , " = " < ")))
         RRMSEA <- unlist(str_extract(unlist(Rrrr), regex("\\.\\d+")))
         RRMSEA <- unlist(RRMSEA[!is.na(RRMSEA)]) 
       }
@@ -156,7 +155,7 @@ checkRMSEA <-
       RN <- unlist(RN[!is.na(RN)])
       
       
-      # Combine everything ++++++++++++++++++++++++++++++++++++++++++++++++====
+      # Combine everything ++++++++++++++++++++++++++++++++++++++++++++++++
       Chi2 <- list(as.vector(R$Chi2),as.vector(C$Chi2)) %>% unlist 
       df <- list(Rdf,Cdf) %>% unlist 
       sign <- list(Rsign,Csign) %>% unlist 
@@ -178,7 +177,7 @@ checkRMSEA <-
       ngroup <- ngroup[!(as.numeric(ngroup) > 10)]
 
       
-      # If the results could be read -> compute RMSEA
+      # If the results could be read -> compute RMSEA ++++====
       chi2RMSEA <- NULL
       if (length(Chi2) != 0){
         if (length(df) == length(Chi2)){
@@ -186,11 +185,11 @@ checkRMSEA <-
             if (length(sign) == length(RMSEA)){
       # ++++++++++++++++++++++++++++++++++++
       
-      if (length(N) == length(Chi2)){ # if Ns were given in the result
+      if (length(N) == length(Chi2)){ # if Ns were given in the result ++++====
       
       # create a new data frame that can contain all variables
       if (length(ngroup) != 0){
-        chi2RMSEA <- data.frame(Chi2 = rep(Chi2, length(ngroup)), df = rep(df, length(ngroup)), N = rep(N, length(ngroup), Reported.RMSEA = rep(RMSEA, length(ngroup)), Chi2.Raw = rep(unlist(Chi2.Raw), length(ngroup)), Multi.group = rep(ngroup, each = length(Chi2)), N.Raw = rep(unlist(nnn), length(ngroup))))
+        chi2RMSEA <- data.frame(Chi2 = rep(Chi2, length(ngroup)), df = rep(df, length(ngroup)), N = rep(N, length(ngroup)), Reported.RMSEA = rep(RMSEA, length(ngroup)), Chi2.Raw = rep(unlist(Chi2.Raw), length(ngroup)), Multi.group = rep(ngroup, each = length(Chi2)), N.Raw = rep(unlist(nnn), length(ngroup)))
       }
       if (length(ngroup) == 0){
         chi2RMSEA <- data.frame(Chi2 = Chi2, df = df, N = N, Reported.RMSEA = RMSEA, Chi2.Raw = unlist(Chi2.Raw), Multi.group = rep("-", length(Chi2)), N.Raw = unlist(nnn))
@@ -250,28 +249,24 @@ checkRMSEA <-
       } else {chi2RMSEA$ConsistencyMG.RMSEA[k] <- "-"}
       }
       
-      chi2RMSEA$Source = names(x)[i]
-
-      chi2RMSEA <- chi2RMSEA[,c("Source",
-                                "Chi2","df","N","Multi.group","rmsea","RMSEA","MG.rmsea","MG.RMSEA","Sign","Reported.RMSEA","ConsistencyRMSEA","ConsistencyMG.RMSEA","Chi2.Raw","N.Raw","Total.Ns","Total.Models")] # change columns order
       }
       
       # -------------------------------------------------------------------------------------
       
-      if (length(N) != length(Chi2)){ # if Ns were not given in the result
+      if (length(N) != length(Chi2)){ # if Ns were not given in the result ++++====
       
       N <- NA
       
       # Get Ns from written text numbers
       word <- (unlist(str_extract_all(txt, regex("(((the|a|one|two|three|four|five|six|seven|eight|nine)?\\s)?hundred\\s(and\\s(ten\\W)?)?)?((thirteen|fourteen|fifteen|sixteen|seventeen|eighteen|nineteen|eleven|twelve)|(((twenty|thirty|forty|fifty|sixty|seventy|eighty|ninety)(\\-?))?(one|two|three|four|five|six|seven|eight|nine)?))?|\\Wten\\W", ignore_case = T))))
       word <- unlist(lapply(word, function(x) x[nchar(x) >= 1]))
-      word <- word %>% str_replace_all(c("(a|the) hundred" = "hundred", " and " = " ", "-" = " ", "ten\\s" = "ten"))
+      word <- word %>% str_replace_all(c("(a|the) hundred" = "hundred", " and " = " ", "-" = " ", "ten\\s" = "ten", "(ty)(\\w)" = "\\1 \\2")) %>% unlist()
 
       
       num <- data.frame(N = rep(NA, length(word)), N.Raw = rep(NA, length(word)))
-      for (i in 1:length(word)){
-        num$N[i] <- unlist(word2num(word[i])[2]) %>% as.character() %>% as.numeric()
-        num$N.Raw[i] <- unlist(word2num(word[i])[1])
+      for (n in 1:length(word)){
+        num$N[n] <- unlist(word2num(word[n])[2]) %>% as.character() %>% as.numeric()
+        num$N.Raw[n] <- unlist(word2num(word[n])[1])
       }
       num <- num[!(as.numeric(num$N) < 10),]
       num <- num[!duplicated(num$N),]
@@ -283,7 +278,8 @@ checkRMSEA <-
       N.Raw <- unlist(N.Raw[!duplicated(N.Raw)])
 
       # Get Ns 
-      N <- unlist(str_extract_all(unlist(N.Raw), regex("(\\d+\\,)?\\d+")))
+      N <- unlist(str_extract_all(unlist(N.Raw), regex("\\W(\\d+\\,)?\\d+\\W")))
+      N <- unlist(str_extract_all(unlist(N), regex("(\\d+\\,)?\\d+")))
       N <- unlist(N[!is.na(N)])
       
       # Get N.Raws from written text and numbers
@@ -371,28 +367,25 @@ checkRMSEA <-
         {if ((chi2RMSEA$MG.RMSEA[m] < chi2RMSEA$Reported.RMSEA[m]) & chi2RMSEA$Sign[m] == "<") {chi2RMSEA$ConsistencyMG.RMSEA[m] <- "Consistent"} else {chi2RMSEA$ConsistencyMG.RMSEA[m] <- "x"}}}
         } else {chi2RMSEA$ConsistencyMG.RMSEA[m] <- "-"}
          }
-      
-      chi2RMSEA$Source = names(x)[i]
 
-      chi2RMSEA <- chi2RMSEA[,c("Source",
-                                "Chi2","df","N","Multi.group","rmsea","RMSEA","MG.rmsea","MG.RMSEA","Sign","Reported.RMSEA","ConsistencyRMSEA","ConsistencyMG.RMSEA","Chi2.Raw","N.Raw","Total.Ns","Total.Models")]
       } # for length(Chi2) != length(N)
               
-            }}}  else {if (length(Chi2) != length(df)| length(RMSEA) != length(Chi2)) {chi2RMSEA <- cat("\nResults found but incomplete\n")}}
-        }  else {chi2RMSEA <- cat("\ncheckRMSEA did not find any results\n")}
-          
-        
-      # if (nrow(chi2RMSEA) >= 1) {
-      #   chi2RMSEA$Source = names(x)[i]}
-      
+         chi2RMSEA$Source = names(x)[i]
+              
+            }}}  else {if (length(Chi2) != length(df)| length(RMSEA) != length(Chi2)) 
+              {chi2RMSEA <- data.frame(Source = names(x)[i], Chi2 = NA, df = NA, N = NA, Multi.group = NA, rmsea = NA,
+                                       RMSEA = NA, MG.rmsea = NA, MG.RMSEA = NA, Sign = NA, Reported.RMSEA = NA, ConsistencyRMSEA = NA,
+                                       ConsistencyMG.RMSEA = NA, Chi2.Raw = NA, N.Raw = NA, Total.Ns = NA, Total.Models = NA)}}
+        }  
+      }# for if loop
+
           # Append, clean and close:
           Res <- rbind(Res, chi2RMSEA)
           rm(chi2RMSEA)
           
     }
       
-    
-    
+
       #----------------------
       
       setTxtProgressBar(pb, i)
@@ -432,8 +425,8 @@ checkRMSEA <-
     
     # Return message when there are no results
     if (nrow(Res) > 0) {
-      return(Res) 
-    } # else {Res <- cat("\n checkRMSEA did not find any results or results found but incomplete info\n")}
+      write.csv(Res, file = "checkRMSEA results.csv", na = "NA")
+    } 
     }
     
     
