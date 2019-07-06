@@ -273,7 +273,7 @@ checkRMSEA <-
       
       
       # Get location of sample size (from all the integers in the article)
-      N.Raw <- str_extract_all(txt, regex("(n\\s?(\\=|equals to|equal to|equal|equals)\\s?(\\d+\\,)?\\d{2,3}\\,?\\s)|((?!\\d+)\\w+\\,?\\s(?!0)(\\d+\\,)?\\d{2,3}\\s(?!\\d+)(?!degrees)\\w+)", ignore_case = T)) # search for numbers and get the location in the article
+      N.Raw <- str_extract_all(txt, regex("(n\\s?(\\=|equals to|equal to|equal|equals)\\s?(\\d+\\,)?\\d{2,3}\\)?\\,?\\s)|((?!\\d+)\\w+\\,?\\s(?!0)(\\d+\\,)?\\d{2,3}\\s(?!\\d+)(?!(degrees|a\\s))\\w+)", ignore_case = T)) # search for numbers and get the location in the article
       N.Raw <- unlist(N.Raw[!is.na(N.Raw)])
       N.Raw <- unlist(N.Raw[!duplicated(N.Raw)])
 
