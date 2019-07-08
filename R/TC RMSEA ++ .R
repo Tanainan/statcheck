@@ -42,7 +42,7 @@ checkRMSEA <-
 
       # Get Chi2 
       CR2 <- str_replace_all(unlist(CR1), c("\\((.){1,20}\\)" = "", "\\s\\s" = " ", "(\\d)(\\,)(\\d)" = "\\1\\3"))
-      CR3 <- str_extract_all(unlist(CR2), regex("((chi-square (?!difference)|chisquare|chi-square of|A?D?[vcwx]2\\s?(=|\\(|of)|(\\:|\\(|\\d|\\,)\\s?2\\s?(\\(|\\=))(.){0,20}((\\d*\\,?\\d*\\.\\d+)|\\d*\\,?\\d+))", ignore_case = TRUE))
+      CR3 <- str_extract_all(unlist(CR2), regex("((chi-square (?!difference)|chisquare|chi-square of|A?D?[vcwx]2\\s?(=|\\(|of)|(\\:|\\(|\\d|\\,)\\s?2\\s?(\\(|\\=))(.){0,20}((d*\\.\\d+)|\\d+))", ignore_case = TRUE))
       CR4 <- str_replace_all(unlist(CR3), c("[vcwx]2|(\\:|\\(|\\d|\\,)\\s2\\s" = ""))
       CR5 <- str_replace_all(unlist(CR4), "^[AD].*", "") # remove Chi2 difference
       CChi2 <- unlist(str_extract(unlist(CR5), regex("(?!(2\\s))((\\d*\\.\\d+)|\\d+)")))
@@ -85,9 +85,9 @@ checkRMSEA <-
       
       
       # Get N from when it is reported in the result
-      Cnnn <- str_extract_all(unlist(CR), regex("(\\Wn\\s?(\\=|equals to|equal to|equal|equals)?\\s?\\d+)", ignore_case = T))
+      Cnnn <- str_extract_all(unlist(CR), regex("(\\Wn\\s?(\\=|equals to|equal to|equal|equals)?\\s?\\d*\\,?\\d+)", ignore_case = T))
       Cnnn <- Cnnn[!is.na(Cnnn)]
-      CN <- str_extract_all(unlist(Cnnn), regex("\\d+"))
+      CN <- str_extract_all(unlist(Cnnn), regex("\\d*\\,?\\d+"))
       CN <- unlist(CN[!is.na(CN)])
       
       
@@ -97,6 +97,7 @@ checkRMSEA <-
       Chi2.Raw <- list(as.vector(C$Chi2.Raw)) %>% unlist 
       RMSEA <- list(CRMSEA) %>% unlist 
       N <- list(CN) %>% unlist 
+      N <- unlist(str_replace_all(unlist(N), "\\,", ""))
       nnn <- list(Cnnn) %>% unlist
       
       # If length(Chi2) != length(RMSEA) 
@@ -109,7 +110,7 @@ checkRMSEA <-
       
       # Get Chi2 
       RC2 <- str_replace_all(unlist(RC1), c("\\((.){1,20}\\)" = "", "\\s\\s" = " ", "(\\d)(\\,)(\\d)" = "\\1\\3"))
-      RC3 <- str_extract_all(unlist(RC2), regex("((chi-square (?!difference)|chisquare|chi-square of|A?D?[vcwx]2\\s?(=|\\(|of)|(\\:|\\(|\\d|\\,)\\s?2\\s?(\\(|\\=))(.){0,20}((\\d*\\,?\\d*\\.\\d+)|\\d*\\,?\\d+))", ignore_case = TRUE))
+      RC3 <- str_extract_all(unlist(RC2), regex("((chi-square (?!difference)|chisquare|chi-square of|A?D?[vcwx]2\\s?(=|\\(|of)|(\\:|\\(|\\d|\\,)\\s?2\\s?(\\(|\\=))(.){0,20}((\\d*\\.\\d+)|\\d+))", ignore_case = TRUE))
       RC4 <- str_replace_all(unlist(RC3), c("[vcwx]2|(\\:|\\(|\\d|\\,)\\s2\\s" = ""))
       RC5 <- str_replace_all(unlist(RC4), "^[AD].*", "") # remove Chi2 difference
       RChi2 <- unlist(str_extract(unlist(RC5), regex("(?!(2\\s))((\\d*\\.\\d+)|\\d+)")))
@@ -149,9 +150,9 @@ checkRMSEA <-
       }    
       
       # Get N from when it is reported in the result
-      Rnnn <- str_extract_all(unlist(RC), regex("(\\Wn\\s?(\\=|equals to|equal to|equal|equals)?\\s?\\d+)", ignore_case = T))
+      Rnnn <- str_extract_all(unlist(RC), regex("(\\Wn\\s?(\\=|equals to|equal to|equal|equals)?\\s?\\d*\\,?\\d+)", ignore_case = T))
       Rnnn <- unlist(Rnnn[!is.na(Rnnn)])
-      RN <- unlist(str_extract_all(unlist(Rnnn), regex("\\d+")))
+      RN <- unlist(str_extract_all(unlist(Rnnn), regex("\\d*\\,?\\d+")))
       RN <- unlist(RN[!is.na(RN)])
       
       
@@ -162,7 +163,9 @@ checkRMSEA <-
       Chi2.Raw <- list(as.vector(R$Chi2.Raw),as.vector(C$Chi2.Raw)) %>% unlist 
       RMSEA <- list(RRMSEA,CRMSEA) %>% unlist 
       N <- list(RN,CN) %>% unlist 
+      N <- unlist(str_replace_all(unlist(N), "\\,", ""))
       nnn <- list(Rnnn,Cnnn) %>% unlist
+      
       
       }
       
@@ -273,13 +276,13 @@ checkRMSEA <-
       
       
       # Get location of sample size (from all the integers in the article)
-      N.Raw <- str_extract_all(txt, regex("(n\\s?(\\=|equals to|equal to|equal|equals)\\s?(\\d+\\,)?\\d{2,3}\\)?\\,?\\s)|((?!\\d+)\\w+\\,?\\s(?!0)(\\d+\\,)?\\d{2,3}\\s(?!\\d+)(?!(degrees|a\\s))\\w+)", ignore_case = T)) # search for numbers and get the location in the article
+      N.Raw <- str_extract_all(txt, regex("(n\\s?(\\=|equals to|equal to|equal|equals)\\s?\\d*\\,?\\d+\\)?\\,?\\s)|((?!\\d+)\\w+\\,?\\s(?!0)\\d*\\,?\\d+\\s(?!\\d+)(?!(degrees|a\\s))\\w+)", ignore_case = T)) # search for numbers and get the location in the article
       N.Raw <- unlist(N.Raw[!is.na(N.Raw)])
       N.Raw <- unlist(N.Raw[!duplicated(N.Raw)])
 
       # Get Ns 
-      N <- unlist(str_extract_all(unlist(N.Raw), regex("\\W(\\d+\\,)?\\d+\\W")))
-      N <- unlist(str_extract_all(unlist(N), regex("(\\d+\\,)?\\d+")))
+      N <- unlist(str_extract_all(unlist(N.Raw), regex("\\W\\d*\\,?\\d+\\W")))
+      N <- unlist(str_extract_all(unlist(N), regex("\\d*\\,?\\d+")))
       N <- unlist(N[!is.na(N)])
       
       # Get N.Raws from written text and numbers

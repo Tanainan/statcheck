@@ -150,7 +150,7 @@ Remove "," between numbers.
 
 ```{r eval = FALSE}
 
-      CR3 <- str_extract_all(unlist(CR2), regex("((chi-square (?!difference)|chisquare|chi-square of|A?D?[vcwx]2\\s?(=|\\(|of)|(\\:|\\(|\\d|\\,)\\s?2\\s?(\\(|\\=))(.){0,20}((\\d*\\,?\\d*\\.\\d+)|\\d+))", ignore_case = TRUE))
+      CR3 <- str_extract_all(unlist(CR2), regex("((chi-square (?!difference)|chisquare|chi-square of|A?D?[vcwx]2\\s?(=|\\(|of)|(\\:|\\(|\\d|\\,)\\s?2\\s?(\\(|\\=))(.){0,20}((\\d*\\.\\d+)|\\d+))", ignore_case = TRUE))
 
       CR4 <- str_replace_all(unlist(CR3), c("[vcwx]2|(\\:|\\(|\\d|\\,)\\s2\\s" = ""))
 
@@ -292,19 +292,19 @@ if (length(Csign) == 0 & length(CRMSEA) != 0){
 
 17)) Try to get N from the reported sentence. E.g., "w2 (df = 24, N = 337) = 38.97". This code will look for a string that has non-alphabet + n + space (optional) + equal + space (optional) + a number.
 
-The \\W is non-alphabet
+The "\\W" is non-alphabet
 E.g., "(n equals 23)", ":n = 32", ", N=44"
 
 ```{r eval = FALSE}
 
-Cnnn <- str_extract_all(unlist(CR), regex("(\\Wn\\s?(\\=|equals to|equal to|equal|equals)?\\s?\\d+)", ignore_case = T))
+Cnnn <- str_extract_all(unlist(CR), regex("(\\Wn\\s?(\\=|equals to|equal to|equal|equals)?\\s?\\d*\\,?\\d+)", ignore_case = T))
       Cnnn <- Cnnn[!is.na(Cnnn)]
-      CN <- str_extract_all(unlist(Cnnn), regex("\\d+"))
+      CN <- str_extract_all(unlist(Cnnn), regex("\\d*\\,?\\d+"))
       CN <- unlist(CN[!is.na(CN)])
 
 ```
 
-18)) Change everything to a vector
+18)) Change everything to a vector; remove "," from the chi2, if there's any.
 
 ```{r eval = FALSE}
 
@@ -314,6 +314,7 @@ Cnnn <- str_extract_all(unlist(CR), regex("(\\Wn\\s?(\\=|equals to|equal to|equa
       Chi2.Raw <- list(as.vector(C$Chi2.Raw)) %>% unlist 
       RMSEA <- list(CRMSEA) %>% unlist 
       N <- list(CN) %>% unlist 
+      N <- unlist(str_replace_all(unlist(N), "\\,", ""))
       nnn <- list(Cnnn) %>% unlist
 
 ```
@@ -382,6 +383,7 @@ Cnnn <- str_extract_all(unlist(CR), regex("(\\Wn\\s?(\\=|equals to|equal to|equa
       Chi2.Raw <- list(as.vector(R$Chi2.Raw),as.vector(C$Chi2.Raw)) %>% unlist 
       RMSEA <- list(RRMSEA,CRMSEA) %>% unlist 
       N <- list(RN,CN) %>% unlist 
+      N <- unlist(str_replace_all(unlist(N), "\\,", ""))
       nnn <- list(Rnnn,Cnnn) %>% unlist
       
       }
@@ -643,7 +645,7 @@ The string itself will be recorded as N.Raw.
 ```{r eval = FALSE}
 
       # Get location of sample size (from all the integers in the article)
-      N.Raw <- str_extract_all(txt, regex("(n\\s?(\\=|equals to|equal to|equal|equals)\\s?(\\d+\\,)?\\d{2,3}\\)?\\,?\\s)|((?!\\d+)\\w+\\,?\\s(?!0)(\\d+\\,)?\\d{2,3}\\s(?!\\d+)(?!(degrees|a\\s))\\w+)", ignore_case = T))
+      N.Raw <- str_extract_all(txt, regex("(n\\s?(\\=|equals to|equal to|equal|equals)\\s?\\d*\\,?\\d+\\)?\\,?\\s)|((?!\\d+)\\w+\\,?\\s(?!0)\\d*\\,?\\d+\\s(?!\\d+)(?!(degrees|a\\s))\\w+)", ignore_case = T))
       N.Raw <- unlist(N.Raw[!is.na(N.Raw)])
       N.Raw <- unlist(N.Raw[!duplicated(N.Raw)])
 
@@ -655,7 +657,7 @@ The string itself will be recorded as N.Raw.
 ```
 
 
-23.4)) Combine Ns and N.Raw
+23.4)) Combine Ns and N.Raw; remove "," from the number. We cannot do this earlier because the program will pick up years (e.g., 2008) too. Keeping "," is to minimize the amount of numbers found. 
 
 
 ```{r eval = FALSE}
