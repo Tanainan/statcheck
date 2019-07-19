@@ -99,8 +99,8 @@ E.g., "w2 (df = 24, N = 337) = 38.97, po.05; CFI = .968; RMSEA = .043."
 
 ``` r
 # If Chi2 is reported before RMSEA ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-      CR <- str_extract_all(unlist(Loc), regex("((chi-square (?!difference)|chisquare|chi-square of|A?D?[vcwx]2\\s?(=|\\(|of)|(\\:|\\(|\\d|\\,)\\s?2\\s?(\\(|\\=))(.){0,40}((\\d*\\.\\d+)|\\d+)(.){0,300}(root mean square error of approximation|root-mean-square error of approximation|RMSEA)\\s(.){0,40}\\s(0?\\.\\d+))", ignore_case = TRUE))
-      CR1 <- str_extract_all(unlist(CR), regex("((chi-square (?!difference)|chisquare|chi-square of|A?D?[vcwx]2\\s?(=|\\(|of)|(\\:|\\(|\\d|\\,)\\s?2\\s?(\\(|\\=))(.){0,40}((\\d*\\.\\d+)|\\d+)(.){0,20})", ignore_case = TRUE))
+      CR <- str_extract_all(unlist(Loc), regex("((chi-square (?!difference)|chisquare|chi-square of|A?D?[vcwx]2\\s?(=|\\(|of)|(\\:|\\(|\\d|\\,)\\s?2\\s?(\\(|\\=))(.){0,40}((\\d*\\,?\\d*\\.\\d+)|\\d*\\,?\\d+)(.){0,300}(root mean square error of approximation|root-mean-square error of approximation|RMSEA)\\s(.){0,40}\\s(0?\\.\\d+))", ignore_case = TRUE))
+      CR1 <- str_extract_all(unlist(CR), regex("((chi-square (?!difference)|chisquare|chi-square of|A?D?[vcwx]2\\s?(=|\\(|of)|(\\:|\\(|\\d|\\,)\\s?2\\s?(\\(|\\=))(.){0,40}((\\d*\\,?\\d*\\.\\d+)|\\d*\\,?\\d+)(.){0,20})", ignore_case = TRUE))
 ```
 
 5)) Remove irrelevant info to make it easier to get the right chi2 value, especially when there's () between the chi2 symbol and the chi2 value. E.g., "w2 (df = 24, N = 337) = 38.97" -&gt; the program might mistakenly read 24 or 337 as chi2 values. We changeything in the parentheses into "".
@@ -109,8 +109,10 @@ E.g., "w2 (df = 24, N = 337) = 38.97" -&gt; "w2 = 38.97"
 
 This is only for when there is df, n, and/or p-value in parentheses between a chi2 notation and a chi2 value.
 
+Remove "," between numbers.
+
 ``` r
-      CR2 <- str_replace_all(unlist(CR1), c("\\((.){1,20}\\)" = "", "\\s\\s" = " "))
+      CR2 <- str_replace_all(unlist(CR1), c("\\((.){1,20}\\)" = "", "\\s\\s" = " ", "(\\d)(\\,)(\\d)" = "\\1\\3"))
 ```
 
 6)) Make a sentence about chi2 shorter to make it easier to get the value.
@@ -225,16 +227,16 @@ if (length(Csign) == 0 & length(CRMSEA) != 0){
 
 17)) Try to get N from the reported sentence. E.g., "w2 (df = 24, N = 337) = 38.97". This code will look for a string that has non-alphabet + n + space (optional) + equal + space (optional) + a number.
 
-The \\W is non-alphabet E.g., "(n equals 23)", ":n = 32", ", N=44"
+The "\\W" is non-alphabet E.g., "(n equals 23)", ":n = 32", ", N=44"
 
 ``` r
-Cnnn <- str_extract_all(unlist(CR), regex("(\\Wn\\s?(\\=|equals to|equal to|equal|equals)?\\s?\\d+)", ignore_case = T))
+Cnnn <- str_extract_all(unlist(CR), regex("(\\Wn\\s?(\\=|equals to|equal to|equal|equals)?\\s?\\d*\\,?\\d+)", ignore_case = T))
       Cnnn <- Cnnn[!is.na(Cnnn)]
-      CN <- str_extract_all(unlist(Cnnn), regex("\\d+"))
+      CN <- str_extract_all(unlist(Cnnn), regex("\\d*\\,?\\d+"))
       CN <- unlist(CN[!is.na(CN)])
 ```
 
-18)) Change everything to a vector
+18)) Change everything to a vector; remove "," from the chi2, if there's any.
 
 ``` r
       Chi2 <- list(as.vector(C$Chi2)) %>% unlist 
@@ -243,6 +245,7 @@ Cnnn <- str_extract_all(unlist(CR), regex("(\\Wn\\s?(\\=|equals to|equal to|equa
       Chi2.Raw <- list(as.vector(C$Chi2.Raw)) %>% unlist 
       RMSEA <- list(CRMSEA) %>% unlist 
       N <- list(CN) %>% unlist 
+      N <- unlist(str_replace_all(unlist(N), "\\,", ""))
       nnn <- list(Cnnn) %>% unlist
 ```
 
@@ -251,11 +254,11 @@ Cnnn <- str_extract_all(unlist(CR), regex("(\\Wn\\s?(\\=|equals to|equal to|equa
 ``` r
       if (length(Chi2) != length(RMSEA)){
         
-      RC <- unlist(str_extract_all(unlist(Loc), regex("((root mean square error of approximation|root-mean-square error of approximation|RMSEA)(.){0,20}(0?\\.\\d+)(.){0,80}(chi-square (?!difference)|chiquare|chi-square of|A?D?[vcw]2\\s?\\=?\\s?\\(|(\\:|\\(|\\d|\\,)\\s?2\\s?(\\(|\\=))(.){0,40}((\\d*\\.\\d+)|\\d+))(.){0,30}", ignore_case = T)))
-      RC1 <- str_extract_all(unlist(CR), regex("((chi-square (?!difference)|chisquare|chi-square of|A?D?[vcwx]2\\s?(=|\\(|of)|(\\:|\\(|\\d|\\,)\\s?2\\s?(\\(|\\=))(.){0,40}((\\d*\\.\\d+)|\\d+)(.){0,30})", ignore_case = TRUE))
+      RC <- unlist(str_extract_all(unlist(Loc), regex("((root mean square error of approximation|root-mean-square error of approximation|RMSEA)(.){0,20}(0?\\.\\d+)(.){0,80}(chi-square (?!difference)|chiquare|chi-square of|A?D?[vcw]2\\s?\\=?\\s?\\(|(\\:|\\(|\\d|\\,)\\s?2\\s?(\\(|\\=))(.){0,40}((\\d*\\,?\\d*\\.\\d+)|\\d*\\,?\\d+))(.){0,30}", ignore_case = T)))
+      RC1 <- str_extract_all(unlist(CR), regex("((chi-square (?!difference)|chisquare|chi-square of|A?D?[vcwx]2\\s?(=|\\(|of)|(\\:|\\(|\\d|\\,)\\s?2\\s?(\\(|\\=))(.){0,40}((\\d*\\,?\\d*\\.\\d+)|\\d*\\,?\\d+)(.){0,30})", ignore_case = TRUE))
       
       # Get Chi2 
-      RC2 <- str_replace_all(unlist(RC1), c("\\((.){1,20}\\)" = "", "\\s\\s" = " "))
+      RC2 <- str_replace_all(unlist(RC1), c("\\((.){1,20}\\)" = "", "\\s\\s" = " ", "(\\d)(\\,)(\\d)" = "\\1\\3"))
       RC3 <- str_extract_all(unlist(RC2), regex("((chi-square (?!difference)|chisquare|chi-square of|A?D?[vcwx]2\\s?(=|\\(|of)|(\\:|\\(|\\d|\\,)\\s?2\\s?(\\(|\\=))(.){0,20}((\\d*\\.\\d+)|\\d+))", ignore_case = TRUE))
       RC4 <- str_replace_all(unlist(RC3), c("[vcwx]2|(\\:|\\(|\\d|\\,)\\s2\\s" = ""))
       RC5 <- str_replace_all(unlist(RC4), "^[AD].*", "") # remove Chi2 difference
@@ -309,6 +312,7 @@ Cnnn <- str_extract_all(unlist(CR), regex("(\\Wn\\s?(\\=|equals to|equal to|equa
       Chi2.Raw <- list(as.vector(R$Chi2.Raw),as.vector(C$Chi2.Raw)) %>% unlist 
       RMSEA <- list(RRMSEA,CRMSEA) %>% unlist 
       N <- list(RN,CN) %>% unlist 
+      N <- unlist(str_replace_all(unlist(N), "\\,", ""))
       nnn <- list(Rnnn,Cnnn) %>% unlist
       
       }
@@ -508,7 +512,7 @@ The string itself will be recorded as N.Raw.
 
 ``` r
       # Get location of sample size (from all the integers in the article)
-      N.Raw <- str_extract_all(txt, regex("(n\\s?(\\=|equals to|equal to|equal|equals)\\s?(\\d+\\,)?\\d{2,3}\\,?\\s)|((?!\\d+)\\w+\\,?\\s(?!0)(\\d+\\,)?\\d{2,3}\\s(?!\\d+)(?!degrees)\\w+)", ignore_case = T))
+      N.Raw <- str_extract_all(txt, regex("(n\\s?(\\=|equals to|equal to|equal|equals)\\s?\\d*\\,?\\d+\\)?\\,?\\s)|((?!\\d+)\\w+\\,?\\s(?!0)\\d*\\,?\\d+\\s(?!\\d+)(?!(degrees|a\\s))\\w+)", ignore_case = T))
       N.Raw <- unlist(N.Raw[!is.na(N.Raw)])
       N.Raw <- unlist(N.Raw[!duplicated(N.Raw)])
 
@@ -518,7 +522,7 @@ The string itself will be recorded as N.Raw.
       N <- unlist(N[!is.na(N)])
 ```
 
-23.4)) Combine Ns and N.Raw
+23.4)) Combine Ns and N.Raw; remove "," from the number. We cannot do this earlier because the program will pick up years (e.g., 2008) too. Keeping "," is to minimize the amount of numbers found.
 
 ``` r
 # Get N.Raws from written text and numbers
@@ -712,7 +716,7 @@ chi2RMSEA$Chi2 <- chi2RMSEA$Chi2 %>% as.character() %>% as.numeric()
     
     # Return message when there are no results
     if (nrow(Res) > 0) {
-      write.csv(Res, file = "checkRMSEA results.csv", na = "NA")
+      write.csv2(Res, file = "checkRMSEA results.csv", na = "NA")
      }}
 ```
 
