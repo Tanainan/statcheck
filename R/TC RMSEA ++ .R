@@ -4,7 +4,7 @@ library(stringr)
 
 source("~/Downloads/StatCheck/StatCheck/R/TC getPDF.R")
 source("~/Downloads/StatCheck/StatCheck/R/TC numbers.R")
-setwd("~/Downloads/Pdfs/AMOS/Done")
+setwd("~/Downloads")
 
 checkRMSEA <-
   function(x) {{
@@ -428,7 +428,7 @@ checkRMSEA <-
     
     # Return message when there are no results
     if (nrow(Res) > 0) {
-      write.csv(Res, file = "checkRMSEA results.csv", na = "NA", sep = ",")
+      write.csv(Res, file = "checkRMSEA results.csv", na = "NA", sep = ",", col.names = T, row.names = T)
     } 
     }
     

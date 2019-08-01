@@ -716,7 +716,7 @@ chi2RMSEA$Chi2 <- chi2RMSEA$Chi2 %>% as.character() %>% as.numeric()
     
     # Return message when there are no results
     if (nrow(Res) > 0) {
-      write.csv(Res, file = "checkRMSEA results.csv", na = "NA", sep = ",")
+      write.csv(Res, file = "checkRMSEA results.csv", na = "NA", sep = ",", col.names = T, row.names = T)
      }}
 ```
 
