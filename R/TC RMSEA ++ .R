@@ -428,7 +428,7 @@ checkRMSEA <-
     
     # Return message when there are no results
     if (nrow(Res) > 0) {
-      write.csv2(Res, file = "checkRMSEA results.csv", na = "NA")
+      write.csv(Res, file = "checkRMSEA results.csv", na = "NA", sep = ",")
     } 
     }
     
