@@ -2,9 +2,8 @@ library(plyr)
 library(dplyr)
 library(stringr)
 
-source("~/Downloads/StatCheck/StatCheck/R/TC getPDF.R")
-source("~/Downloads/StatCheck/StatCheck/R/TC numbers.R")
 setwd("~/Downloads")
+#("~/Downloads/Pdfs/AMOS/Done")
 
 checkRMSEA <-
   function(x) {{
@@ -284,12 +283,18 @@ checkRMSEA <-
       N <- unlist(str_extract_all(unlist(N.Raw), regex("\\W\\d*\\,?\\d+\\W")))
       N <- unlist(str_extract_all(unlist(N), regex("\\d*\\,?\\d+")))
       N <- unlist(N[!is.na(N)])
+      N <- unlist(str_replace_all(unlist(N), "\\,", ""))
+      
+      nn <- data.frame(N = N, N.Raw = N.Raw)
+      nn <- distinct(nn, N, .keep_all = T) # remove duplicates
+      nn <- nn[!(as.numeric(as.character(nn$N)) < 10),]
+
       
       # Get N.Raws from written text and numbers
-      N.Raw <- list(N.Raw,num$N.Raw) %>% unlist 
+      N.Raw <- list(nn$N.Raw,num$N.Raw) %>% unlist 
       
       # Combine text and numbers
-      N <- list(N,num$N) %>% unlist
+      N <- list(as.vector(nn$N),num$N) %>% unlist
       N <- unlist(str_replace_all(unlist(N), "\\,", ""))
 
       # create a new data frame that can contain all variables
@@ -428,9 +433,10 @@ checkRMSEA <-
     
     # Return message when there are no results
     if (nrow(Res) > 0) {
-      write.csv(Res, file = "checkRMSEA results.csv", na = "NA", sep = ",", col.names = T, row.names = T)
+      write.csv(Res, file = "checkRMSEA_results.csv", na = "NA")
     } 
+    return(Res)
     }
     
-    
+#checkPDFdir.rmsea("~/Downloads/Pdfs/AMOS/Done", destination = "~/Download")
   

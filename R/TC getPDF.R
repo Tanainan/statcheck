@@ -57,4 +57,3 @@ checkPDF.rmsea <-
       gsub("\\.pdf$", "", basename(files), perl = TRUE)
     return(checkRMSEA(txts, ...))
   }
-
