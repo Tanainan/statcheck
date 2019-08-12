@@ -1,6 +1,7 @@
 library(plyr)
 library(dplyr)
 library(stringr)
+options(max.print = "9999")
 
 setwd("~/Downloads")
 #("~/Downloads/Pdfs/AMOS/Done")
