@@ -172,8 +172,8 @@ checkRMSEA <-
       # check if there're multi-group models and extract number of groups from adjacent words 
       multi <- unlist(str_detect(txt, regex("multigroup|multi-group|multiple (groups|group)|multi-sample|multiple (samples|sample)|multisample|invar", ignore_case = T)))
       if (length(which(multi == TRUE)) >= 1){
-      ngroup <- unlist(str_extract_all(txt, regex("(.){1,15}(groups)(?!\\.)(.){1,15}", ignore_case = T)))
-      ngroup <- unlist(str_extract_all(ngroup, regex("\\d+|two|three|four|five|six|seven|eight|nine|\\sten\\s")))
+      ngroup <- unlist(str_extract_all(txt, regex("(.){1,15}(groups|samples)(?!\\.)(.){1,15}", ignore_case = T)))
+      ngroup <- unlist(str_extract_all(ngroup, regex("2|3|4|5|6|7|8|9|10|two|three|four|five|six|seven|eight|nine|\\sten\\s")))
       ngroup <- ngroup %>% str_replace_all(c("two" = "2", "three" = "3", "four" = "4", "five" = "5", "six" = "6", "seven" = "7", "eight" = "8", "nine" = "9", "\\sten\\s" = "10")) %>% unlist()
       ngroup <- ngroup[!duplicated(ngroup)]
       } else {ngroup = NULL}
@@ -276,13 +276,15 @@ checkRMSEA <-
       
       
       # Get location of sample size (from all the integers in the article)
-      N.Raw <- str_extract_all(txt, regex("(n\\s?(\\=|equals to|equal to|equal|equals)\\s?\\d*\\,?\\d+\\)?\\,?\\s)|((?!\\d+)\\w+\\,?\\s(?!0)\\d*\\,?\\d+\\s(?!\\d+)(?!(degrees|a\\s))\\w+)", ignore_case = T)) # search for numbers and get the location in the article
+      #N.Raw <- str_extract_all(txt, regex("(n\\s?(\\=|equals to|equal to|equal|equals)\\s?\\d*\\,?\\d+\\)?\\,?\\s)|((?!\\d+)\\w+\\,?\\s(?!0)\\d*\\,?\\d+\\s(?!\\d+)(?!(degrees|a\\s))\\w+)", ignore_case = T)) # search for numbers and get the location in the article
+      N.Raw <- str_extract_all(txt, regex("(n\\s?(\\=|equals to|equal to|equal|equals)\\s?(\\d+\\,)?\\d{2,3}\\,?\\s)|((?!\\d+)\\w+\\,?\\s(?!0)(\\d+\\,)?\\d{2,3}\\s(?!\\d+)(?!(degrees|a\\s|Jan|Feb|March|April|May|June|July|Augu|Sep|Oct|Nov|Dec|items|days|to\\s|years|months))\\w+)", ignore_case = T)) # search for numbers and get the location in the article
       N.Raw <- unlist(N.Raw[!is.na(N.Raw)])
       N.Raw <- unlist(N.Raw[!duplicated(N.Raw)])
 
       # Get Ns 
-      N <- unlist(str_extract_all(unlist(N.Raw), regex("\\W\\d*\\,?\\d+\\W")))
-      N <- unlist(str_extract_all(unlist(N), regex("\\d*\\,?\\d+")))
+      #N <- unlist(str_extract_all(unlist(N.Raw), regex("\\W\\d*\\,?\\d+\\W")))
+      #N <- unlist(str_extract_all(unlist(N), regex("\\d*\\,?\\d+")))
+      N <- unlist(str_extract_all(unlist(N.Raw), regex("(\\d+\\,)?\\d+")))
       N <- unlist(N[!is.na(N)])
       N <- unlist(str_replace_all(unlist(N), "\\,", ""))
       
@@ -292,10 +294,10 @@ checkRMSEA <-
 
       
       # Get N.Raws from written text and numbers
-      N.Raw <- list(nn$N.Raw,num$N.Raw) %>% unlist 
+      N.Raw <- list(as.vector(nn$N.Raw),as.vector(num$N.Raw)) %>% unlist 
       
       # Combine text and numbers
-      N <- list(as.vector(nn$N),num$N) %>% unlist
+      N <- list(as.vector(nn$N),as.vector(num$N)) %>% unlist
       N <- unlist(str_replace_all(unlist(N), "\\,", ""))
 
       # create a new data frame that can contain all variables
@@ -439,5 +441,5 @@ checkRMSEA <-
     return(Res)
     }
     
-#checkPDFdir.rmsea("~/Downloads/Pdfs/AMOS/Done", destination = "~/Download")
+#checkPDFdir.rmsea("~/Downloads/Pdfs/AMOS/Done")
   
