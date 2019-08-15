@@ -321,12 +321,12 @@ Cnnn <- str_extract_all(unlist(CR), regex("(\\Wn\\s?(\\=|equals to|equal to|equa
 20)) Check if there's any multi-group keyword mentioned in the article. If yes, search for any possible numbers of the group by looknig for a word "groups" first, and then get the numbers written in words around that are close to the word "groups" (e.g., about 15 characters before and after the keyword). Here, I assume that there shouldn't be more than 10 groups. This method is still not sufficient, especially when they don't mention the number of the group in the text at all (e.g., gender).
 
 ``` r
-      multi <- unlist(str_detect(txt, regex("multigroup|multi-group|multiple (groups|group)|multi-sample|multiple (samples|sample)|multisample", ignore_case = T)))
+      multi <- unlist(str_detect(txt, regex("multigroup|multi-group|multiple (groups|group)|multi-sample|multiple (samples|sample)|multisample|invar", ignore_case = T)))
 
 if (length(which(multi == TRUE)) >= 1){
       ngroup <- unlist(str_extract_all(txt, regex("(.){1,15}(groups)(?!\\.)(.){1,15}", ignore_case = T)))
-      ngroup <- unlist(str_extract_all(ngroup, regex("\\d+|one|two|three|four|five|six|seven|eight|nine|\\sten\\s")))
-      ngroup <- ngroup %>% str_replace_all(c("one" = "1", "two" = "2", "three" = "3", "four" = "4", "five" = "5", "six" = "6", "seven" = "7", "eight" = "8", "nine" = "9", "\\sten\\s" = "10")) %>% unlist()
+      ngroup <- unlist(str_extract_all(ngroup, regex("\\d+|two|three|four|five|six|seven|eight|nine|\\sten\\s")))
+      ngroup <- ngroup %>% str_replace_all(c("two" = "2", "three" = "3", "four" = "4", "five" = "5", "six" = "6", "seven" = "7", "eight" = "8", "nine" = "9", "\\sten\\s" = "10")) %>% unlist()
       ngroup <- ngroup[!duplicated(ngroup)]
       } else {ngroup = NULL}
       ngroup <- ngroup[!(as.numeric(ngroup) > 10)]

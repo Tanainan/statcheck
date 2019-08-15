@@ -170,11 +170,11 @@ checkRMSEA <-
       }
       
       # check if there're multi-group models and extract number of groups from adjacent words 
-      multi <- unlist(str_detect(txt, regex("multigroup|multi-group|multiple (groups|group)|multi-sample|multiple (samples|sample)|multisample", ignore_case = T)))
+      multi <- unlist(str_detect(txt, regex("multigroup|multi-group|multiple (groups|group)|multi-sample|multiple (samples|sample)|multisample|invar", ignore_case = T)))
       if (length(which(multi == TRUE)) >= 1){
       ngroup <- unlist(str_extract_all(txt, regex("(.){1,15}(groups)(?!\\.)(.){1,15}", ignore_case = T)))
-      ngroup <- unlist(str_extract_all(ngroup, regex("\\d+|one|two|three|four|five|six|seven|eight|nine|\\sten\\s")))
-      ngroup <- ngroup %>% str_replace_all(c("one" = "1", "two" = "2", "three" = "3", "four" = "4", "five" = "5", "six" = "6", "seven" = "7", "eight" = "8", "nine" = "9", "\\sten\\s" = "10")) %>% unlist()
+      ngroup <- unlist(str_extract_all(ngroup, regex("\\d+|two|three|four|five|six|seven|eight|nine|\\sten\\s")))
+      ngroup <- ngroup %>% str_replace_all(c("two" = "2", "three" = "3", "four" = "4", "five" = "5", "six" = "6", "seven" = "7", "eight" = "8", "nine" = "9", "\\sten\\s" = "10")) %>% unlist()
       ngroup <- ngroup[!duplicated(ngroup)]
       } else {ngroup = NULL}
       ngroup <- ngroup[!(as.numeric(ngroup) > 10)]
