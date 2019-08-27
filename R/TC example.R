@@ -1,7 +1,7 @@
 library(stringr)
 library(tidyverse)
 library(rio)
-setwd("~/Downloads/Pdfs/AMOS/Done")
+setwd("~/Downloads/Pdfs/Mplus/Done")
 
 # AMOS
 
@@ -283,8 +283,8 @@ txt <- readLines(".txt")
 txt <- readLines(".txt")
 txt <- readLines(".txt")
 txt <- readLines(".txt")
-txt <- readLines(".txt")
-txt <- readLines(".txt")
+txt <- readLines("Klimstra (2010c).txt")
+txt <- readLines("~/Downloads/Pdfs/Mplus/Done/Slagt (2012).txt")
 txt <- readLines("~/Downloads/Pdfs/Mplus/Done/Lehavot (2011).txt")
 
 

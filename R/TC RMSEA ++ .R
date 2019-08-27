@@ -277,16 +277,17 @@ checkRMSEA <-
       
       # Get location of sample size (from all the integers in the article)
       #N.Raw <- str_extract_all(txt, regex("(n\\s?(\\=|equals to|equal to|equal|equals)\\s?\\d*\\,?\\d+\\)?\\,?\\s)|((?!\\d+)\\w+\\,?\\s(?!0)\\d*\\,?\\d+\\s(?!\\d+)(?!(degrees|a\\s))\\w+)", ignore_case = T)) # search for numbers and get the location in the article
-      N.Raw <- str_extract_all(txt, regex("(n\\s?(\\=|equals to|equal to|equal|equals)\\s?(\\d+\\,)?\\d{2,3}\\,?\\s)|((?!\\d+)\\w+\\,?\\s(?!0)(\\d+\\,)?\\d{2,3}\\s(?!\\d+)(?!(degrees|a\\s|Jan|Feb|March|April|May|June|July|Augu|Sep|Oct|Nov|Dec|items|days|to\\s|years|months))\\w+)", ignore_case = T)) # search for numbers and get the location in the article
+      N.Raw <- str_extract_all(txt, regex("(n\\s?(\\=|equals to|equal to|equal|equals)\\s?\\d*\\,?\\d+)|((?!\\d+)\\w+\\,?\\s(?!0)(\\d+\\,)?\\d{2,3}\\s(?!\\d+)(?!(degrees|a\\s|Jan|Feb|March|April|May|June|July|Augu|Sep|Oct|Nov|Dec|items|days|to\\s|years|months))\\w+)", ignore_case = T)) # search for numbers and get the location in the article
       N.Raw <- unlist(N.Raw[!is.na(N.Raw)])
       N.Raw <- unlist(N.Raw[!duplicated(N.Raw)])
 
       # Get Ns 
-      #N <- unlist(str_extract_all(unlist(N.Raw), regex("\\W\\d*\\,?\\d+\\W")))
-      #N <- unlist(str_extract_all(unlist(N), regex("\\d*\\,?\\d+")))
-      N <- unlist(str_extract_all(unlist(N.Raw), regex("(\\d+\\,)?\\d+")))
+      N <- unlist(str_replace_all(unlist(N.Raw), "(\\d)(\\,)(\\d)", "\\1\\3"))
+      # N <- unlist(str_extract_all(unlist(N.Raw), regex("\\W\\d*\\,?\\d+\\W")))
+      # N <- unlist(str_extract_all(unlist(N), regex("\\d*\\,?\\d+")))
+      N <- unlist(str_extract_all(unlist(N), regex("\\s((\\d*\\,?\\d+)|((?!0)(\\d+\\,)?\\d{2,3}))")))
+      N <- unlist(str_replace_all(unlist(N), "\\s", ""))
       N <- unlist(N[!is.na(N)])
-      N <- unlist(str_replace_all(unlist(N), "\\,", ""))
       
       nn <- data.frame(N = N, N.Raw = N.Raw)
       nn <- distinct(nn, N, .keep_all = T) # remove duplicates
@@ -442,4 +443,5 @@ checkRMSEA <-
     }
     
 #checkPDFdir.rmsea("~/Downloads/Pdfs/AMOS/Done")
+#checkPDFdir.rmsea("~/Downloads/Pdfs/Mplus/a")
   
