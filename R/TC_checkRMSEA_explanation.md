@@ -2,9 +2,9 @@ checkRMSEA explanation
 ================
 Tanainan Chuanchaiyakul
 
-The actual code file: <https://github.com/Tanainan/statcheck/blob/master/R/TC%20RMSEA%20%2B%2B%20.R>
+The actual code file: <https://github.com/Tanainan/statcheck/blob/master/R/TC%20RMSEA%20%2B%2B%20.R> The files you will need include: TC RMSEA++.R , TC getPDF.R , and TC numbers. The TC RMSEA MG = 2.R is for computing multi-group with \# groups = 2. You will also need to set the working directory or where you would like the CSV output to be saved.
 
-The first part of the code is the same as statcheck, but only different function name.
+The first part of the code is the same as statcheck function, but only different function name.
 
 ``` r
 checkRMSEA <-
@@ -325,7 +325,7 @@ Cnnn <- str_extract_all(unlist(CR), regex("(\\Wn\\s?(\\=|equals to|equal to|equa
 
 if (length(which(multi == TRUE)) >= 1){
       ngroup <- unlist(str_extract_all(txt, regex("(.){1,15}(groups|samples)(?!\\.)(.){1,15}", ignore_case = T)))
-      ngroup <- unlist(str_extract_all(ngroup, regex("\\d+|two|three|four|five|six|seven|eight|nine|\\sten\\s")))
+      ngroup <- unlist(str_extract_all(ngroup, regex("2|3|4|5|6|7|8|9|10|two|three|four|five|six|seven|eight|nine|\\sten\\s")))
       ngroup <- ngroup %>% str_replace_all(c("two" = "2", "three" = "3", "four" = "4", "five" = "5", "six" = "6", "seven" = "7", "eight" = "8", "nine" = "9", "\\sten\\s" = "10")) %>% unlist()
       ngroup <- ngroup[!duplicated(ngroup)]
       } else {ngroup = NULL}
@@ -514,15 +514,18 @@ I created the data frame for N and N.Raw in order to remove the duplicates of Ns
 
 ``` r
       # Get location of sample size (from all the integers in the article)
-      N.Raw <- str_extract_all(txt, regex("(n\\s?(\\=|equals to|equal to|equal|equals)\\s?\\d*\\,?\\d+\\)?\\,?\\s)|((?!\\d+)\\w+\\,?\\s(?!0)\\d*\\,?\\d+\\s(?!\\d+)(?!(degrees|a\\s))\\w+)", ignore_case = T))
+      #N.Raw <- str_extract_all(txt, regex("(n\\s?(\\=|equals to|equal to|equal|equals)\\s?\\d*\\,?\\d+\\)?\\,?\\s)|((?!\\d+)\\w+\\,?\\s(?!0)\\d*\\,?\\d+\\s(?!\\d+)(?!(degrees|a\\s))\\w+)", ignore_case = T)) # search for numbers and get the location in the article
+      N.Raw <- str_extract_all(txt, regex("(n\\s?(\\=|equals to|equal to|equal|equals)\\s?\\d*\\,?\\d+)|((?!\\d+)\\w+\\,?\\s(?!0)(\\d+\\,)?\\d{2,3}\\s(?!\\d+)(?!(degrees|a\\s|Jan|Feb|March|April|May|June|July|Augu|Sep|Oct|Nov|Dec|items|days|to\\s|years|months))\\w+)", ignore_case = T)) # search for numbers and get the location in the article
       N.Raw <- unlist(N.Raw[!is.na(N.Raw)])
       N.Raw <- unlist(N.Raw[!duplicated(N.Raw)])
 
       # Get Ns 
-      N <- unlist(str_extract_all(unlist(N.Raw), regex("\\W(\\d+\\,)?\\d+\\W")))
-      N <- unlist(str_extract_all(unlist(N), regex("(\\d+\\,)?\\d+")))
+      N <- unlist(str_replace_all(unlist(N.Raw), "(\\d)(\\,)(\\d)", "\\1\\3"))
+      # N <- unlist(str_extract_all(unlist(N.Raw), regex("\\W\\d*\\,?\\d+\\W")))
+      # N <- unlist(str_extract_all(unlist(N), regex("\\d*\\,?\\d+")))
+      N <- unlist(str_extract_all(unlist(N), regex("\\s((\\d*\\,?\\d+)|((?!0)(\\d+\\,)?\\d{2,3}))")))
+      N <- unlist(str_replace_all(unlist(N), "\\s", ""))
       N <- unlist(N[!is.na(N)])
-      N <- unlist(str_replace_all(unlist(N), "\\,", ""))
       
       nn <- data.frame(N = N, N.Raw = N.Raw)
       nn <- distinct(nn, N, .keep_all = T) # remove duplicates
@@ -532,11 +535,11 @@ I created the data frame for N and N.Raw in order to remove the duplicates of Ns
 23.4)) Combine Ns and N.Raw; remove "," from the number. We cannot do this earlier because the program will pick up years (e.g., 2008) too. Keeping "," is to minimize the amount of numbers found.
 
 ``` r
-# Get N.Raws from written text and numbers
-      N.Raw <- list(nn$N.Raw,num$N.Raw) %>% unlist 
+      # Get N.Raws from written text and numbers
+      N.Raw <- list(as.vector(nn$N.Raw),as.vector(num$N.Raw)) %>% unlist 
       
       # Combine text and numbers
-      N <- list(as.vector(nn$N),num$N) %>% unlist
+      N <- list(as.vector(nn$N),as.vector(num$N)) %>% unlist
       N <- unlist(str_replace_all(unlist(N), "\\,", ""))
 ```
 
@@ -617,7 +620,7 @@ If multi-group is not found in the article: The total row is \# of chi \* \# of 
 23.7)) The rest is the same as Step 22.3-22.8
 
 ``` r
-chi2RMSEA$Chi2 <- chi2RMSEA$Chi2 %>% as.character() %>% as.numeric()
+      chi2RMSEA$Chi2 <- chi2RMSEA$Chi2 %>% as.character() %>% as.numeric()
       chi2RMSEA$df <- chi2RMSEA$df %>% as.character() %>% as.numeric()
       chi2RMSEA$N <- chi2RMSEA$N %>% as.character() %>% as.numeric()
       chi2RMSEA$Reported.RMSEA <- chi2RMSEA$Reported.RMSEA %>% as.character() %>% as.numeric()
@@ -723,7 +726,7 @@ chi2RMSEA$Chi2 <- chi2RMSEA$Chi2 %>% as.character() %>% as.numeric()
     
     # Return message when there are no results
     if (nrow(Res) > 0) {
-      write.csv(Res, file = "checkRMSEA results.csv", na = "NA", sep = ",", col.names = T, row.names = T)
+      write.csv(Res, file = "checkRMSEA results.csv", na = "NA")
      }}
 ```
 
@@ -794,14 +797,17 @@ checkPDF.rmsea <-
 When this code does not work:
 
 -   When the results are in a table
--   When a number of participants change but the final sample size is not reported (e.g., "9 participants were removed from...") (Bassi (2012))
+-   When a number of participants change but the final sample size is not reported (e.g., "9 participants were removed from...") (e.g., Bassi (2012))
 -   When it's a multi-group. Sometimes it doesn't say how many groups in number or written word (e.g., gender) and we don't know exactly which model is computed with multi-group. This also includes when the keyword is in the reference.
 -   The text itself, such as
-    -   x 2 13 1/4 21:19 (Bakker (2007))
-    -   v instead of v2 (de Marco (2006))
-    -   Having no "=" at all (Dunn (2006))
-    -   Having no chi2 notation at all (Furnham (2009))
-    -   skip a sentence in PDF completely (Jasuja (2008).txt)
-    -   chi2 and RMSEA are too far from each other (Gill (2013))
-    -   Many models are reported too close to each other (e.g., RMSEA = .04 ... chi2 = 353 ... RMSEA = .06) (Castro-Costa (2008))
-    -   read "=" as "s" (Carter (2006))
+    -   x 2 13 1/4 21:19 (e.g., Bakker (2007))
+    -   v instead of v2 (e.g., de Marco (2006))
+    -   Having no "=" at all (e.g., Dunn (2006))
+    -   Having no chi2 notation at all (e.g., Furnham (2009))
+    -   skip a sentence in PDF completely (e.g., Jasuja (2008))
+    -   chi2 and RMSEA are too far from each other (e.g., Gill (2013))
+    -   Many models are reported too close to each other (e.g., RMSEA = .04 ... chi2 = 353 ... RMSEA = .06) (e.g., Castro-Costa (2008))
+    -   read "=" as "s" (e.g., Carter (2006))
+-   When the RMSEA is reported before the Chi2. I tried to solve this issue, but it is still not perfect.
+
+If there is not output, make sure that you check in the PDF is converted to text file properly. Sometimes this occurs when I use Mac OS.

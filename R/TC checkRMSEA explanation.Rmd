@@ -5,6 +5,7 @@ output: rmarkdown::github_document
 ---
 
 The actual code file: https://github.com/Tanainan/statcheck/blob/master/R/TC%20RMSEA%20%2B%2B%20.R
+The files you will need include: TC RMSEA++.R , TC getPDF.R , and TC numbers. The TC RMSEA MG = 2.R is for computing multi-group with # groups = 2. You will also need to set the working directory or where you would like the CSV output to be saved.
 
 ```{r setup, include=FALSE}
 library(plyr)
@@ -14,7 +15,7 @@ library(stringr)
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-The first part of the code is the same as statcheck, but only different function name.
+The first part of the code is the same as statcheck function, but only different function name.
 
 ``` {r eval = FALSE}
 
@@ -887,7 +888,7 @@ The total row is # of chi * # of Ns.
     
     # Return message when there are no results
     if (nrow(Res) > 0) {
-      write.csv(Res, file = "checkRMSEA results.csv", na = "NA", sep = ",", col.names = T, row.names = T)
+      write.csv(Res, file = "checkRMSEA results.csv", na = "NA")
      }}
 
 
@@ -966,14 +967,20 @@ checkPDF.rmsea <-
 When this code does not work:
 
 - When the results are in a table
-- When a number of participants change but the final sample size is not reported (e.g., "9 participants were removed from...") (Bassi (2012))
+- When a number of participants change but the final sample size is not reported (e.g., "9 participants were removed from...") (e.g., Bassi (2012))
 - When it's a multi-group. Sometimes it doesn't say how many groups in number or written word (e.g., gender) and we don't know exactly which model is computed with multi-group. This also includes when the keyword is in the reference.
 - The text itself, such as
-    - x 2 13 1/4 21:19 (Bakker (2007))
-    - v instead of v2 (de Marco (2006))
-    - Having no "=" at all (Dunn (2006))
-    - Having no chi2 notation at all (Furnham (2009))
-    - skip a sentence in PDF completely (Jasuja (2008).txt)
-    - chi2 and RMSEA are too far from each other (Gill (2013))
-    - Many models are reported too close to each other (e.g., RMSEA = .04 ... chi2 = 353 ... RMSEA = .06) (Castro-Costa (2008))
-    - read "=" as "s" (Carter (2006))
+    - x 2 13 1/4 21:19 (e.g., Bakker (2007))
+    - v instead of v2 (e.g., de Marco (2006))
+    - Having no "=" at all (e.g., Dunn (2006))
+    - Having no chi2 notation at all (e.g., Furnham (2009))
+    - skip a sentence in PDF completely (e.g., Jasuja (2008))
+    - chi2 and RMSEA are too far from each other (e.g., Gill (2013))
+    - Many models are reported too close to each other (e.g., RMSEA = .04 ... chi2 = 353 ... RMSEA = .06) (e.g., Castro-Costa (2008))
+    - read "=" as "s" (e.g., Carter (2006))
+- When the RMSEA is reported before the Chi2. I tried to solve this issue, but it is still not perfect.
+
+If there is not output, make sure that you check in the PDF is converted to text file properly. Sometimes this occurs when I use Mac OS. 
+
+
+    
