@@ -568,23 +568,35 @@ This code can extract up to 3 digits word. The patterns are:
 
 If there are 3 digits, it will be written as:
 "x|z hundred and y"     -> "a hundred and ten",       "eight hundred and ten" 
+
 "x|z hundred and w"     -> "a hundred and sixty",     "eight hundred and sixty"
+
 "x|z hundred and w-z"   -> "a hundred and sixty-two", "eight hundred and sixty-two"
+
 "x|z hundred and z"     -> "a hundred and two",       "eight hundred and two"
+
 "x|z hundred"           -> "a hundred",               "eight hundred" 
+
 "x|z hundred w"         -> "a hundred sixty",         "eight hundred sixty"
+
 "x|z hundred w-z"       -> "a hundred sixty-two",     "eight hundred sixty-two"
 
 We don't need to add any restriction for these cases below because they never happen anyway.
+
 "x|z hundred y"         -> "a hundred and ten",       "eight hundred and ten"
+
 "x|z hundred and z"     -> "a hundred two",           "eight hundred two"
 
 
 where 
 x = the, a
+
 y = ten, eleven - nineteen
+
 w = tweenty, thirty, ..., ninety
+
 z = one - nine
+
 "|" = "or"
 
 For 2 digits:
