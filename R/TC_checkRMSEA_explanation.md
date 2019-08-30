@@ -461,7 +461,9 @@ if (length(N) != length(Chi2)){ # if Ns were not given in the result
 
 This code can extract up to 3 digits word. The patterns are:
 
-If there are 3 digits, it will be written as: "x|z hundred and y" -&gt; "a hundred and ten", "eight hundred and ten"
+If there are 3 digits, it will be written as:
+
+"x|z hundred and y" -&gt; "a hundred and ten", "eight hundred and ten"
 
 "x|z hundred and w" -&gt; "a hundred and sixty", "eight hundred and sixty"
 
@@ -477,13 +479,13 @@ If there are 3 digits, it will be written as: "x|z hundred and y" -&gt; "a hundr
 
 We don't need to add any restriction for these cases below because they never happen anyway.
 
-"x|z hundred y" -&gt; "a hundred and ten", "eight hundred and ten"
+"x|z hundred y" -&gt; "a hundred ten", "eight hundred ten"
 
 "x|z hundred and z" -&gt; "a hundred two", "eight hundred two"
 
 where x = the, a
 
-y = ten, eleven - nineteen
+y = ten, eleven, ..., nineteen
 
 w = tweenty, thirty, ..., ninety
 
@@ -497,7 +499,7 @@ For 1 digit: "z"
 
 So, the code would be "x|z (optional) + hundred (optional) + and (optional) + y|w|w-z|z (optional)"
 
-Then I remove "the" and "a" in front of "hundred. I also remove " and " and "-" because the function that I will use to change to a number cannot read them.
+Then I remove "the" and "a" in front of "hundred". I also remove " and " and "-" because the function that I will use to change written words into numbers cannot read them.
 
 The code won't extract "ten" from "content" or "a tent" because I specifiy that there must be a space between the word.
 
