@@ -551,7 +551,7 @@ chi2RMSEA$ConsistencyRMSEA <- NA # test if the reported and computed RMSEAs are 
 ```
 
 
-23)) The second case: when # chi2 values is not the same as # of N values retrives.
+23)) The second case: when # chi2 values is not the same as # of N values retrived.
 
 
 ```{r eval = FALSE}
@@ -564,7 +564,9 @@ if (length(N) != length(Chi2)){ # if Ns were not given in the result
 
 23.1)) Get the Ns from numbers written in words from the article. 
 
-This code can extract up to 3 digits word. The patterns are:
+This code can extract up to 3-digit word. 
+
+The patterns are:
 
 If there are 3 digits, it will be written as:
 
@@ -581,6 +583,7 @@ If there are 3 digits, it will be written as:
 "x|z hundred w"         -> "a hundred sixty",         "eight hundred sixty"
 
 "x|z hundred w-z"       -> "a hundred sixty-two",     "eight hundred sixty-two"
+
 
 
 We don't need to add any restriction for these cases below because they never happen anyway.
@@ -613,11 +616,11 @@ For 1 digit:
 
 So, the code would be "x|z (optional) + hundred (optional) + and (optional) + y|w|w-z|z (optional)"
 
-Then I remove "the" and "a" in front of "hundred". I also remove " and " and "-" because the function that I will use to change written words into numbers cannot read them.
+Then I remove "the" and "a" in front of "hundred". I also remove " and " and "-" because the function that I will use to change written words into numbers cannot read them. I also add a space between "sixtytwo" to be "sixty two".
 
 The code won't extract "ten" from "content" or "a tent" because I specifiy that there must be a space between the word.
 
-Some articles have more than 1,000 participants. I believe that if that's the case, they usually are written in numbers (otherwise, it is too long).
+Some articles have more than four-digit participants. If that's the case, they usually are written in numbers (otherwise, it is too long).
 
 
 ```{r eval = FALSE}
@@ -634,7 +637,7 @@ Some articles have more than 1,000 participants. I believe that if that's the ca
 
 The written word itself will be recorded as N.Raw.
 
-** This requires a function from "TC numbers.R" file.
+** This requires a function "word2num" from "TC numbers.R" file.
 
 
 ```{r eval = FALSE}
@@ -654,7 +657,7 @@ The written word itself will be recorded as N.Raw.
 
 First, numbers are extracted from a string that says "n=..."; "n equals to ...", or any numbers that are between words (e.g., "include 549 teachers"), or after a word and a comma (e.g., "in total, 16 were graduate students"). I prevent the program to pick up, for example, "2" from "teachers 54 A2". 
 
-I set the minimum digits at 2 (i.e., assuming N > 10). This includes when there are more than a thousand participants, there will be "," between the second and third digits. It won't extract a year of publication and degrees of freedom.
+I set the minimum digits at 2 (i.e., assuming N > 10). This includes when there are more than a thousand participants, there will be a comma between the second and third digits. It won't extract a year of publication and degrees of freedom.
 Duplicates are removed.
 
 The string itself will be recorded as N.Raw.
